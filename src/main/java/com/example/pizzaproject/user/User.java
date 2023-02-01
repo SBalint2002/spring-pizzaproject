@@ -109,4 +109,17 @@ public class User {
     public void setCook(boolean cook) {
         this.cook = cook;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", email='" + email + '\'' +
+                ", order_id=" + order_id +
+                ", admin=" + admin +
+                ", cook=" + cook +
+                '}';
+    }
 }

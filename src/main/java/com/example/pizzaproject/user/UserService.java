@@ -27,6 +27,7 @@ public class UserService {
 
     //Új felhasználó hozzáadása és egyedi e-mail cím ellenőrzése
     public void addNewUser(User user) {
+        System.out.println(user);
         Optional<User> studentOptional = userRepository.findUserByEmail(user.getEmail());
         if (studentOptional.isPresent()) {
             throw new IllegalStateException("Email is taken");
