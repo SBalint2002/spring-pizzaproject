@@ -13,6 +13,7 @@ public class UserService {
 
     //UserRepository meghívása, alatta kontruktora
     private final UserRepository userRepository;
+
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -48,7 +49,7 @@ public class UserService {
 
     //Felhasználó adatainak módosítása
     @Transactional
-    public void updateUser(Long userId, String first_name, String last_name, String email, boolean admin, boolean cook) {
+    public void updateUser(Long userId, String first_name, String last_name, String email, String password, boolean admin, boolean cook) {
         //Ellenőrzi, hogy van -e mit updatelni
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException(
                 "User with id " + userId + " does not exists"
@@ -71,11 +72,15 @@ public class UserService {
             user.setEmail(email);
         }
 
-        if (!Objects.equals(user.isAdmin(), admin)){
+        if (password != null && password.length() > 0 && !Objects.equals(user.getPassword(), password)) {
+            user.setPassword(password);
+        }
+
+        if (!Objects.equals(user.isAdmin(), admin)) {
             user.setAdmin(admin);
         }
 
-        if (!Objects.equals(user.isCook(), cook)){
+        if (!Objects.equals(user.isCook(), cook)) {
             user.setCook(cook);
         }
     }
