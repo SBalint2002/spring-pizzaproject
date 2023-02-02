@@ -23,7 +23,7 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping
+    @PostMapping(path = "/register")
     public void registerNewStudent(@RequestBody User user) {
         userService.addNewUser(user);
     }
@@ -39,8 +39,9 @@ public class UserController {
             @RequestParam(required = false) String first_name,
             @RequestParam(required = false) String last_name,
             @RequestParam(required = false) String email,
+            @RequestParam(required = false) String password,
             @RequestParam(name = "admin", required = false) boolean admin,
             @RequestParam(name = "cook", required = false) boolean cook){
-        userService.updateUser(studentId, first_name, last_name, email, admin, cook);
+        userService.updateUser(studentId, first_name, last_name, email, password, admin, cook);
     }
 }

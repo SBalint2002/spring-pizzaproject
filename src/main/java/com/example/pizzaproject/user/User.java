@@ -19,7 +19,7 @@ public class User {
     private String first_name;
     private String last_name;
     private String email;
-    private Long order_id;
+    private String password;
     private boolean admin;
     private boolean cook;
 
@@ -29,29 +29,29 @@ public class User {
     }
 
     //Mindent is kérek
-    public User(Long id, String first_name, String last_name, String email, Long order_id, boolean admin, boolean cook) {
+    public User(Long id, String first_name, String last_name, String email, String password, boolean admin, boolean cook) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
-        this.order_id = order_id;
+        this.password = password;
         this.admin = admin;
         this.cook = cook;
     }
 
     //Főbb felhasználói adatok (név, email), valszeg bejelentkezéshez majd
-    public User(String first_name, String last_name, String email) {
+    public User(String first_name, String last_name, String email, String password) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
+        this.password = password;
     }
 
     //Rendelés lekérdezése felhasználó név és email címmel
-    public User(String first_name, String last_name, String email, Long order_id){
+    public User(String first_name, String last_name, String email){
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
-        this.order_id = order_id;
     }
 
     public Long getId() {
@@ -86,12 +86,12 @@ public class User {
         this.email = email;
     }
 
-    public Long getOrder_id() {
-        return order_id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setOrder_id(Long order_id) {
-        this.order_id = order_id;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isAdmin() {
@@ -117,7 +117,7 @@ public class User {
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 ", email='" + email + '\'' +
-                ", order_id=" + order_id +
+                ", password=" + password +
                 ", admin=" + admin +
                 ", cook=" + cook +
                 '}';
