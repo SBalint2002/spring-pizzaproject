@@ -42,24 +42,30 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+
+    //HA ADMIN ÉS A HTTP REQUESTBEN NEM ADJUK MEG HOGY ADMIN TRUE AKKOR AUTOMATIKUSAN FALSE LESZ
+    //MERT AMIT NEM KAP MEG AZ FALSE-RA ÁLLÍTJA
     @Transactional
     public void updateUser(Long userId, User updateUser) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
 
-        if (!user.getEmail().equals(updateUser.getEmail())) {
-            Optional<User> existingUser = userRepository.findUserByEmail(updateUser.getEmail());
-            if (existingUser.isPresent()) {
-                throw new IllegalStateException("Email is already taken");
-            }
+        if (updateUser.getFirst_name() != null && updateUser.getFirst_name().length() > 0) {
+            user.setFirst_name(updateUser.getFirst_name());
         }
-
-        user.setFirst_name(updateUser.getFirst_name());
-        user.setLast_name(updateUser.getLast_name());
-        user.setEmail(updateUser.getEmail());
+        if (updateUser.getLast_name() != null && updateUser.getLast_name().length() > 0) {
+            user.setLast_name(updateUser.getLast_name());
+        }
+        if (updateUser.getEmail() != null && updateUser.getEmail().length() > 0 && !Objects.equals(updateUser.getEmail(), user.getEmail())) {
+            Optional<User> userOptional = userRepository.findUserByEmail(updateUser.getEmail());
+            if (userOptional.isPresent()) {
+                throw new IllegalStateException("Email is taken");
+            }
+            user.setEmail(updateUser.getEmail());
+        }
+        user.setAdmin(updateUser.isAdmin());
         if (updateUser.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
-        user.setAdmin(updateUser.isAdmin());
     }
 }

@@ -40,7 +40,7 @@ public class UserController {
     @PutMapping(path = "{userId}")
     public ResponseEntity<String> updateUser(
             @PathVariable("userId") Long userId,
-            @RequestBody User user){
+            @RequestBody(required = false) User user){
         try{
             userService.updateUser(userId, user);
             return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
