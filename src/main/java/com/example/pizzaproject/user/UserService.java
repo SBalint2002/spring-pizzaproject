@@ -42,9 +42,6 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-
-    //HA ADMIN ÉS A HTTP REQUESTBEN NEM ADJUK MEG HOGY ADMIN TRUE AKKOR AUTOMATIKUSAN FALSE LESZ
-    //MERT AMIT NEM KAP MEG AZ FALSE-RA ÁLLÍTJA
     @Transactional
     public void updateUser(Long userId, User updateUser) {
         User user = userRepository.findById(userId)
@@ -63,7 +60,6 @@ public class UserService {
             }
             user.setEmail(updateUser.getEmail());
         }
-        user.setAdmin(updateUser.isAdmin());
         if (updateUser.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
