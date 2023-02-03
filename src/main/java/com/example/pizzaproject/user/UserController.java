@@ -39,15 +39,10 @@ public class UserController {
 
     @PutMapping(path = "{userId}")
     public ResponseEntity<String> updateUser(
-            @PathVariable("userId") Long studentId,
-            @RequestParam(required = false) String first_name,
-            @RequestParam(required = false) String last_name,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String password,
-            @RequestParam(name = "admin", required = false) boolean admin,
-            @RequestParam(name = "cook", required = false) boolean cook){
+            @PathVariable("userId") Long userId,
+            @RequestBody User user){
         try{
-            userService.updateUser(studentId, first_name, last_name, email, password, admin, cook);
+            userService.updateUser(userId, user);
             return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

@@ -21,7 +21,6 @@ public class User {
     private String email;
     private String password;
     private boolean admin;
-    private boolean cook;
 
     //Üres konstruktor
     public User() {
@@ -29,14 +28,13 @@ public class User {
     }
 
     //Mindent is kérek
-    public User(Long id, String first_name, String last_name, String email, String password, boolean admin, boolean cook) {
+    public User(Long id, String first_name, String last_name, String email, String password, boolean admin) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
         this.admin = admin;
-        this.cook = cook;
     }
 
     //Főbb felhasználói adatok (név, email), valszeg bejelentkezéshez majd
@@ -102,14 +100,6 @@ public class User {
         this.admin = admin;
     }
 
-    public boolean isCook() {
-        return cook;
-    }
-
-    public void setCook(boolean cook) {
-        this.cook = cook;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -119,7 +109,6 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password=" + password +
                 ", admin=" + admin +
-                ", cook=" + cook +
                 '}';
     }
 }
