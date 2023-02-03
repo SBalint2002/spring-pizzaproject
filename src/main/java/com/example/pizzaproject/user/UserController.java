@@ -46,7 +46,11 @@ public class UserController {
             @RequestParam(required = false) String password,
             @RequestParam(name = "admin", required = false) boolean admin,
             @RequestParam(name = "cook", required = false) boolean cook){
-        userService.updateUser(studentId, first_name, last_name, email, password, admin, cook);
-        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        try{
+            userService.updateUser(studentId, first_name, last_name, email, password, admin, cook);
+            return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
