@@ -35,6 +35,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public Optional<User> findUserByEmailAndPassword(String email, String password) {
+        Optional<User> user = userRepository.findUserByEmail(email);
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+            return user;
+        }
+        return Optional.empty();
+    }
+
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalStateException("User with id " + userId + " does not exist");

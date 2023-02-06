@@ -1,7 +1,10 @@
 package com.example.pizzaproject.user;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +32,27 @@ public class UserController {
     public ResponseEntity<String> registerNewStudent(@RequestBody User user) {
         userService.addNewUser(user);
         return new ResponseEntity<>("User created successfully", HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Tokmindegy> login(@RequestBody User user) {
+        Optional<User> foundUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (foundUser.isPresent()) {
+            String jwtToken = createJWT(foundUser.get());
+            Tokmindegy tm = new Tokmindegy(jwtToken);
+            return new ResponseEntity<>(tm, HttpStatus.OK);
+        } else {
+            //TODO: csúnya, restexceptionmapper
+            throw new RuntimeException();
+        }
+    }
+
+    private String createJWT(User user) {
+        String jwtToken = Jwts.builder()
+                .setSubject(user.getEmail())
+                .signWith(SignatureAlgorithm.HS256, "secretKey")
+                .compact();
+        return jwtToken;
     }
 
     @DeleteMapping(path = "{userId}")
