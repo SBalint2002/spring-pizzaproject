@@ -43,6 +43,7 @@ public class UserController {
             return new ResponseEntity<>(tm, HttpStatus.OK);
         } else {
             //TODO: csúnya, restexceptionmapper
+            //pulrikveszt miatt
             throw new RuntimeException();
         }
     }
