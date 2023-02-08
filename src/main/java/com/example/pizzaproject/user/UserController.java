@@ -1,7 +1,7 @@
 package com.example.pizzaproject.user;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.pizzaproject.auth.JwtResponse;
+import com.example.pizzaproject.auth.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +15,8 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(path = "/user")
 public class UserController {
-
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -29,31 +29,43 @@ public class UserController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<String> registerNewStudent(@RequestBody User user) {
+    public ResponseEntity<String> registerNewUser(@RequestBody User user) {
         userService.addNewUser(user);
         return new ResponseEntity<>("User created successfully", HttpStatus.OK);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Tokmindegy> login(@RequestBody User user) {
+    public ResponseEntity<JwtResponse> login(@RequestBody User user) {
         Optional<User> foundUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
         if (foundUser.isPresent()) {
-            String jwtToken = createJWT(foundUser.get());
-            Tokmindegy tm = new Tokmindegy(jwtToken);
+            String jwtToken = JwtUtil.createJWT(foundUser.get());
+            JwtResponse tm = new JwtResponse(jwtToken);
             return new ResponseEntity<>(tm, HttpStatus.OK);
         } else {
             //TODO: csúnya, restexceptionmapper
-            //pulrikveszt miatt
+            System.out.println("Email-jelszó páros nem passzol");
             throw new RuntimeException();
         }
     }
 
-    private String createJWT(User user) {
-        String jwtToken = Jwts.builder()
-                .setSubject(user.getEmail())
-                .signWith(SignatureAlgorithm.HS256, "secretKey")
-                .compact();
-        return jwtToken;
+    @GetMapping(path = "/data", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> getUserData(@RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        String email = JwtUtil.getEmailFromToken(token);
+        Optional<User> user = userService.findUserByEmail(email);
+        if (user.isPresent()) {
+            User userData = new User(user.get().getId(), user.get().getFirst_name(), user.get().getLast_name(), user.get().getEmail(), user.get().getPassword(), user.get().isAdmin());
+            System.out.println(userData);
+            return new ResponseEntity<>(userData, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping("/email")
+    public String getEmailByToken(@RequestHeader("Authorization") String token) {
+        String email = JwtUtil.getEmailFromToken(token);
+        return email;
     }
 
     @DeleteMapping(path = "{userId}")

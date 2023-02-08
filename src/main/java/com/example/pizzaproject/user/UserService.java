@@ -43,6 +43,14 @@ public class UserService {
         return Optional.empty();
     }
 
+    public Optional<User> findUserByEmail(String email) {
+        Optional<User> user = userRepository.findUserByEmail(email);
+        if (user.isPresent()) {
+            return user;
+        }
+        return Optional.empty();
+    }
+
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalStateException("User with id " + userId + " does not exist");
