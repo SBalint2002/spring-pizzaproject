@@ -1,9 +1,8 @@
-package com.example.pizzaproject.user;
+package com.example.pizzaproject.auth;
 
-public class Tokmindegy {
+public class JwtResponse {
     private String JWTToken;
-
-    public Tokmindegy(String JWTToken) {
+    public JwtResponse(String JWTToken) {
         this.JWTToken = JWTToken;
     }
 
