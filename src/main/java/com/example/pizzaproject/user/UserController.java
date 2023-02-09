@@ -42,7 +42,7 @@ public class UserController {
             JwtResponse tm = new JwtResponse(jwtToken);
             return new ResponseEntity<>(tm, HttpStatus.OK);
         } else {
-            //TODO: csúnya, restexceptionmapper
+            //TODO: csúnya, restexceptionmapper, és kezelni!!!
             System.out.println("Email-jelszó páros nem passzol");
             throw new RuntimeException();
         }
