@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,15 +24,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping(path = "/get-all")
     public List<User> getUsers() {
         return userService.getUsers();
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<String> registerNewUser(@RequestBody User user) {
-        userService.addNewUser(user);
-        return new ResponseEntity<>("User created successfully", HttpStatus.OK);
+    public ResponseEntity<JwtResponse> registerNewUser(@RequestBody User user) {
+        try{
+            userService.addNewUser(user);
+            String token = JwtUtil.createJWT(user);
+            JwtResponse response = new JwtResponse("User created successfully", token);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResponseStatusException e) {
+            JwtResponse response = new JwtResponse("Error while creating user", null);
+            return new ResponseEntity<>(response, e.getStatusCode());
+        }
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,12 +47,12 @@ public class UserController {
         Optional<User> foundUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
         if (foundUser.isPresent()) {
             String jwtToken = JwtUtil.createJWT(foundUser.get());
-            JwtResponse tm = new JwtResponse(jwtToken);
-            return new ResponseEntity<>(tm, HttpStatus.OK);
+            JwtResponse response = new JwtResponse("success",jwtToken);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            //TODO: csúnya, restexceptionmapper, és kezelni!!!
             System.out.println("Email-jelszó páros nem passzol");
-            throw new RuntimeException();
+            JwtResponse response = new JwtResponse("failure", null);
+            return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
         }
     }
 
