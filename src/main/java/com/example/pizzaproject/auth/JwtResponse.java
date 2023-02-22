@@ -1,14 +1,14 @@
 package com.example.pizzaproject.auth;
 
 public class JwtResponse {
-    private String jwttoken;
+    private String JWTToken;
     private String status;
-    private String refreshToken;
+    private String RefreshToken;
 
-    public JwtResponse(String status, String jwttoken, String RefreshToken) {
+    public JwtResponse(String status, String JWTToken, String RefreshToken) {
         this.status = status;
-        this.jwttoken = jwttoken;
-        this.refreshToken = RefreshToken;
+        this.JWTToken = JWTToken;
+        this.RefreshToken = RefreshToken;
     }
 
     public String getStatus() {
@@ -19,19 +19,19 @@ public class JwtResponse {
         this.status = status;
     }
 
-    public String getJwttoken() {
-        return jwttoken;
+    public String getJWTToken() {
+        return JWTToken;
     }
 
-    public void setJwttoken(String jwttoken) {
-        this.jwttoken = jwttoken;
+    public void setJWTToken(String JWTToken) {
+        this.JWTToken = JWTToken;
     }
 
     public String getRefreshToken() {
-        return refreshToken;
+        return RefreshToken;
     }
 
     public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+        RefreshToken = refreshToken;
     }
 }

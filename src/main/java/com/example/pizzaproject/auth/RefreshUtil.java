@@ -2,7 +2,6 @@ package com.example.pizzaproject.auth;
 
 import com.example.pizzaproject.user.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -35,16 +34,9 @@ public class RefreshUtil {
     }
 
     public static boolean isExpired(String token) {
-        if (token == null) {
-            return true;
-        }
-        try{
-            Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
-            Date expirationDate = claims.getExpiration();
-            return expirationDate.before(new Date());
-        }catch (JwtException error) {
-            return true;
-        }
+        Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
+        Date expirationDate = claims.getExpiration();
+        return expirationDate.before(new Date());
     }
 }
 

@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 @RequestMapping(path = "/user")
 public class UserController {
     @Autowired
@@ -80,7 +80,6 @@ public class UserController {
         String email = RefreshUtil.getEmailFromRefreshToken(request.getRefreshToken());
         Optional<User> foundUser = userService.findUserByEmail(email);
         if (foundUser.isPresent()) {
-            foundUser.get().setPassword("");
             String jwtToken = JwtUtil.createJWT(foundUser.get());
             String refreshToken = RefreshUtil.createRefreshToken(foundUser.get());
             JwtResponse response = new JwtResponse("success", jwtToken, refreshToken);
