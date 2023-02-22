@@ -53,7 +53,6 @@ public class UserController {
     public ResponseEntity<JwtResponse> login(@RequestBody User user) {
         Optional<User> foundUser = userService.findUserByEmailAndPassword(user.getEmail(), user.getPassword());
         if (foundUser.isPresent()) {
-            foundUser.get().setPassword("");
             return UserService.createResponse(foundUser.get());
         } else {
             return UserService.createErrorResponse();
