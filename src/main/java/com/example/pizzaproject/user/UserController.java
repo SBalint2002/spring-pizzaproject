@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.sql.Ref;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,8 +30,12 @@ public class UserController {
     }
 
     @GetMapping(path = "/get-all")
-    public List<User> getUsers() {
-        return userService.getUsers();
+    public List<UserResponseDto> getUsers() {
+        List<User> users = userService.getUsers();
+        List<UserResponseDto> response = users.stream()
+                .map(user -> new UserResponseDto(user.getId(), user.getFirst_name(), user.getLast_name(), user.getEmail(), user.isAdmin()))
+                .collect(Collectors.toList());
+        return response;
     }
 
     @PostMapping(path = "/register")
@@ -75,6 +80,7 @@ public class UserController {
         String email = RefreshUtil.getEmailFromRefreshToken(request.getRefreshToken());
         Optional<User> foundUser = userService.findUserByEmail(email);
         if (foundUser.isPresent()) {
+            foundUser.get().setPassword("");
             String jwtToken = JwtUtil.createJWT(foundUser.get());
             String refreshToken = RefreshUtil.createRefreshToken(foundUser.get());
             JwtResponse response = new JwtResponse("success", jwtToken, refreshToken);
@@ -86,7 +92,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/data", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUserData(@RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<UserResponseDto> getUserData(@RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
         if (JwtUtil.isExpired(token)) {
             //status code 451
@@ -95,7 +101,8 @@ public class UserController {
         String email = JwtUtil.getEmailFromJWTToken(token);
         Optional<User> user = userService.findUserByEmail(email);
         if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+            UserResponseDto userResponseDto = new UserResponseDto(user.get().getId(), user.get().getFirst_name(), user.get().getLast_name(), user.get().getEmail(), user.get().isAdmin());
+            return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
