@@ -24,7 +24,7 @@ public class Order {
     private Long location_id;
 
     @Column(name = "order_date")
-    private Date order_date= new Date();
+    private Date order_date;
 
     @Column(name = "quantity")
     private int quantity;
