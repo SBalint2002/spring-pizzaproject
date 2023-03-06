@@ -97,5 +97,11 @@ public class UserService {
         if (updateUser.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
         }
+        if (updateUser.isAdmin()) {
+            user.setAdmin(true);
+        }
+        if (!updateUser.isAdmin()) {
+            user.setAdmin(false);
+        }
     }
 }
