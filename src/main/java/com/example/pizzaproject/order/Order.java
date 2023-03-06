@@ -1,9 +1,6 @@
 package com.example.pizzaproject.order;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Date;
 
@@ -11,6 +8,15 @@ import java.util.Date;
 @Table(name = "ORDERS")
 public class Order {
     @Id
+    @SequenceGenerator(
+            name = "order_sequence",
+            sequenceName = "order_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "order_sequence"
+    )
     @Column(name = "id")
     private Long id;
 
@@ -24,7 +30,7 @@ public class Order {
     private Long location_id;
 
     @Column(name = "order_date")
-    private Date order_date= new Date();
+    private Date order_date;
 
     @Column(name = "quantity")
     private int quantity;
