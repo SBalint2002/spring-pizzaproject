@@ -1,7 +1,6 @@
 package com.example.pizzaproject.user;
 
 import jakarta.persistence.*;
-//asc
 @Entity
 @Table
 public class User {
