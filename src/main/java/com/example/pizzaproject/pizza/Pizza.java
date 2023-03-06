@@ -2,7 +2,7 @@ package com.example.pizzaproject.pizza;
 
 import jakarta.persistence.*;
 @Entity
-@Table
+@Table(name="PIZZAS")
 public class Pizza {
     @Id
     @SequenceGenerator(
@@ -14,10 +14,15 @@ public class Pizza {
             strategy = GenerationType.SEQUENCE,
             generator = "pizza_sequence"
     )
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "price")
     private int price;
+    @Column(name = "description")
     private String description;
+    @Column(name = "picture")
     private String picture;
 
     public Pizza() {

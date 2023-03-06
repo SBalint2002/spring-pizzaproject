@@ -2,7 +2,7 @@ package com.example.pizzaproject.user;
 
 import jakarta.persistence.*;
 @Entity
-@Table
+@Table(name="USERS")
 public class User {
     @Id
     @SequenceGenerator(
@@ -14,12 +14,19 @@ public class User {
             strategy = GenerationType.SEQUENCE,
             generator = "user_sequence"
     )
+    @Column(name = "id")
     private Long id;
+    @Column(name = "first_name")
     private String first_name;
+    @Column(name = "last_name")
     private String last_name;
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
+    @Column(name = "admin")
     private boolean admin;
+
 
     //Üres konstruktor
     public User() {
