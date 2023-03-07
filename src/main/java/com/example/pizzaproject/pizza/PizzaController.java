@@ -39,7 +39,7 @@ public class PizzaController {
 
     }
 
-    @PostMapping(path = "{pizzaId}")
+    @PutMapping(path = "{pizzaId}")
     public ResponseEntity<String> updatePizza(
             @PathVariable("pizzaId") Long pizzaId,
             @RequestBody(required = false) Pizza pizza){
