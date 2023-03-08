@@ -4,17 +4,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="PIZZAS")
 public class Pizza {
-    @Id
-    @SequenceGenerator(
-            name = "pizza_sequence",
-            sequenceName = "pizza_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "pizza_sequence"
-    )
-    @Column(name = "id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
     private String name;
