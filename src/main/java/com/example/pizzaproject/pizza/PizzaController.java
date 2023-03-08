@@ -1,6 +1,5 @@
 package com.example.pizzaproject.pizza;
 
-import com.example.pizzaproject.auth.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

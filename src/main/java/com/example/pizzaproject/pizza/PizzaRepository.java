@@ -1,7 +1,5 @@
 package com.example.pizzaproject.pizza;
 
-import com.example.pizzaproject.pizza.Pizza;
-import com.example.pizzaproject.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
