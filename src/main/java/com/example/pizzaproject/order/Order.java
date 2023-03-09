@@ -1,20 +1,21 @@
 package com.example.pizzaproject.order;
 
+import com.example.pizzaproject.pizza.Pizza;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
-public class Order {
+public class Order implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id")
     private Long user_id;
-
-    @Column(name = "pizza_id")
-    private Long pizza_id;
 
     @Column(name = "location")
     private String location;
@@ -26,35 +27,44 @@ public class Order {
     private int price;
 
     @Column(name = "phone_number")
-    private int phone_number;
+    private String phone_number;
 
     @Column(name = "ready")
     private boolean ready;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderPizza> orderPizzas;
+
+    public Order(Long user_id, String location, Date order_date, int price, String phone_number, boolean ready){
+        this.user_id = user_id;
+        this.location = location;
+        this.order_date = order_date;
+        this.price = price;
+        this.phone_number = phone_number;
+        this.ready = ready;
+        this.orderPizzas = new ArrayList<>();
+    }
+
+    public List<OrderPizza> getOrderPizzas() {
+        return orderPizzas;
+    }
+
+    public void setOrderPizzas(List<OrderPizza> orderPizzas) {
+        this.orderPizzas = orderPizzas;
+    }
+
     public Order() {
     }
 
-    public Order(Long user_id, Long pizza_id, String location, Date order_date, int price, int phone_number, boolean ready) {
-        this.user_id = user_id;
-        this.pizza_id = pizza_id;
-        this.location = location;
-        this.order_date = order_date;
-        this.price = price;
-        this.phone_number = phone_number;
-        this.ready = ready;
-    }
-
-    public Order(Long id, Long user_id, Long pizza_id, String location, Date order_date, int price, int phone_number, boolean ready) {
+    public Order(Long id, Long user_id, String location, Date order_date, int price, String phone_number, boolean ready) {
         this.id = id;
         this.user_id = user_id;
-        this.pizza_id = pizza_id;
         this.location = location;
         this.order_date = order_date;
         this.price = price;
         this.phone_number = phone_number;
         this.ready = ready;
     }
-
     public Long getId() {
         return id;
     }
@@ -69,14 +79,6 @@ public class Order {
 
     public void setUser_id(Long user_id) {
         this.user_id = user_id;
-    }
-
-    public Long getPizza_id() {
-        return pizza_id;
-    }
-
-    public void setPizza_id(Long pizza_id) {
-        this.pizza_id = pizza_id;
     }
 
     public String getLocation() {
@@ -103,11 +105,11 @@ public class Order {
         this.price = price;
     }
 
-    public int getPhone_number() {
+    public String getPhone_number() {
         return phone_number;
     }
 
-    public void setPhone_number(int phone_number) {
+    public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
 
@@ -119,17 +121,21 @@ public class Order {
         this.ready = ready;
     }
 
+    public void addPizza(Pizza pizza) {
+        orderPizzas.add(new OrderPizza(this, pizza));
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
                 ", user_id=" + user_id +
-                ", pizza_id=" + pizza_id +
                 ", location='" + location + '\'' +
                 ", order_date=" + order_date +
                 ", price=" + price +
-                ", phone_number=" + phone_number +
+                ", phone_number='" + phone_number + '\'' +
                 ", ready=" + ready +
+                ", orderPizzas=" + orderPizzas +
                 '}';
     }
 }

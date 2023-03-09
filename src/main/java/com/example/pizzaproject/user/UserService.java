@@ -32,7 +32,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void addNewUser(User user) {
+    public void addNewUser(User user) throws ResponseStatusException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Optional<User> existingUser = userRepository.findUserByEmail(user.getEmail());
         if (existingUser.isPresent()) {
