@@ -1,6 +1,5 @@
 package com.example.pizzaproject.pizza;
 
-import com.example.pizzaproject.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,13 +30,6 @@ public class PizzaService {
         pizzaRepository.save(pizza);
     }
 
-    public Optional<Pizza> findPizzaByName(String name) {
-        Optional<Pizza> pizza = pizzaRepository.findPizzaByName(name);
-        if (pizza.isPresent()) {
-            return pizza;
-        }
-        return Optional.empty();
-    }
     @Transactional
     public void updatePizza(Long pizzaId, Pizza updatePizza) {
         Pizza pizza = pizzaRepository.findById(pizzaId)

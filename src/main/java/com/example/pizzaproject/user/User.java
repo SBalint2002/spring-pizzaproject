@@ -11,7 +11,7 @@ public class User {
     private String first_name;
     @Column(name = "last_name")
     private String last_name;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "password")
     private String password;

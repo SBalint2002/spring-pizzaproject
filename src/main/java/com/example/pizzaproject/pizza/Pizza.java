@@ -1,6 +1,11 @@
 package com.example.pizzaproject.pizza;
 
+import com.example.pizzaproject.order.OrderPizza;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
+
 @Entity
 @Table(name="PIZZAS")
 public class Pizza {
@@ -14,6 +19,18 @@ public class Pizza {
     private String description;
     @Column(name = "picture")
     private String picture;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pizza")
+    private List<OrderPizza> orderPizzas;
+
+    public List<OrderPizza> getOrderPizzas() {
+        return orderPizzas;
+    }
+
+    public void setOrderPizzas(List<OrderPizza> orderPizzas) {
+        this.orderPizzas = orderPizzas;
+    }
 
     public Pizza() {
 
@@ -82,6 +99,7 @@ public class Pizza {
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", picture='" + picture + '\'' +
+                ", orderPizzas=" + orderPizzas +
                 '}';
     }
 }

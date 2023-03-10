@@ -7,10 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-//<User, Long> Student - Adattípus, Long - ID típusa
 public interface UserRepository extends JpaRepository<User, Long> {
-
-    //email alapú keresés (service addNewUser-ben felhasználva)
     @Query("SELECT u FROM User u WHERE u.email = ?1")
     Optional<User> findUserByEmail(String email);
 }

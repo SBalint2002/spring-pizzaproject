@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query("SELECT u FROM Order u WHERE u.id = ?1")
-    Optional<Order> findOrderByName(long id);
+
 }
