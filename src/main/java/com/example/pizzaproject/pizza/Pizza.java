@@ -20,6 +20,9 @@ public class Pizza {
     @Column(name = "picture")
     private String picture;
 
+    @Column(name = "available")
+    private boolean available;
+
     @JsonIgnore
     @OneToMany(mappedBy = "pizza")
     private List<OrderPizza> orderPizzas;
@@ -36,19 +39,21 @@ public class Pizza {
 
     }
 
-    public Pizza(String name, int price, String description, String picture) {
+    public Pizza(String name, int price, String description, String picture, boolean available) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.picture = picture;
+        this.available = available;
     }
 
-    public Pizza(Long id, String name, int price, String description, String picture) {
+    public Pizza(Long id, String name, int price, String description, String picture, boolean available) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.picture = picture;
+        this.available = available;
     }
 
     public Long getId() {
@@ -91,6 +96,14 @@ public class Pizza {
         this.picture = picture;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
     @Override
     public String toString() {
         return "Pizza{" +
@@ -99,6 +112,7 @@ public class Pizza {
                 ", price=" + price +
                 ", description='" + description + '\'' +
                 ", picture='" + picture + '\'' +
+                ", available=" + available +
                 ", orderPizzas=" + orderPizzas +
                 '}';
     }

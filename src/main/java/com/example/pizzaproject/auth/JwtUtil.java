@@ -12,7 +12,8 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private static final String secret = "1KoOpQKyVv5Yxkj4LHxjBgLjpczO6L8P0lq87LDi";
-    private static final long expirationMs = 300000; // 5 perc
+    //private static final long expirationMs = 300000; // 5 perc
+    private static final long expirationMs = 60000; // 1 perc
 
     public static String createJWT(User user) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

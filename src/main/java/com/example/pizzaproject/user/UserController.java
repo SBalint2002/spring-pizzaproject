@@ -105,14 +105,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/email")
-    public String getEmailByToken(@RequestHeader("Authorization") String token) {
-        String email = JwtUtil.getEmailFromJWTToken(token);
-        return email;
-    }
-
     @DeleteMapping(path = "{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<String> deleteUser(
+            @PathVariable("userId") Long userId,
+            @RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        if (JwtUtil.isExpired(token)) {
+            //status code 451
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+        }
         userService.deleteUser(userId);
         return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
@@ -120,7 +121,13 @@ public class UserController {
     @PutMapping(path = "{userId}")
     public ResponseEntity<String> updateUser(
             @PathVariable("userId") Long userId,
-            @RequestBody(required = false) User user) {
+            @RequestBody(required = false) User user,
+            @RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        if (JwtUtil.isExpired(token)) {
+            //status code 451
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+        }
         try {
             userService.updateUser(userId, user);
             return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
