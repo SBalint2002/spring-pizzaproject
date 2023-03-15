@@ -54,6 +54,13 @@ public class PizzaService {
         if (updatePizza.getPicture() != null && updatePizza.getPicture().length() > 0){
             pizza.setPicture(updatePizza.getPicture());
         }
+
+        if (updatePizza.isAvailable()) {
+            pizza.setAvailable(true);
+        }
+        if (!updatePizza.isAvailable()) {
+            pizza.setAvailable(false);
+        }
     }
     public void deletePizza(long pizzaId){
         if (!pizzaRepository.existsById(pizzaId)) {

@@ -1,7 +1,10 @@
 package com.example.pizzaproject.order;
 
+import com.example.pizzaproject.auth.JwtUtil;
 import com.example.pizzaproject.pizza.Pizza;
 import com.example.pizzaproject.pizza.PizzaRepository;
+import com.example.pizzaproject.user.User;
+import com.example.pizzaproject.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
@@ -20,6 +24,9 @@ public class OrderController {
     private PizzaRepository pizzaRepository;
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public OrderController(OrderService orderService) {
@@ -33,10 +40,20 @@ public class OrderController {
 
 
     @PostMapping(path = "/add-order")
-    public ResponseEntity<String> addNewOrder(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<String> addNewOrder(
+            @RequestBody OrderDto orderDto,
+            @RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        if (JwtUtil.isExpired(token) || token.isEmpty()) {
+            //status code 451
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+        }
         try {
+            String email = JwtUtil.getEmailFromJWTToken(token);
+            Optional<User> user = userService.findUserByEmail(email);
             int price = orderService.sumPrice(orderDto.getPizzaIds());
-            Order order = new Order(Long.valueOf(1), // user id :DDDDD
+            Order order = new Order(
+                    user.get().getId(),
                     orderDto.getLocation(),
                     new Date(),
                     price,
@@ -52,13 +69,18 @@ public class OrderController {
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>("Order could not be added: " + e.getMessage(), e.getStatusCode());
         }
-
     }
 
     @PutMapping(path = "{orderId}")
     public ResponseEntity<String> updateOrder(
             @PathVariable("orderId") Long id,
-            @RequestBody(required = false) Order order){
+            @RequestBody(required = false) Order order,
+            @RequestHeader("Authorization") String authorization){
+        String token = authorization.substring(7);
+        if (JwtUtil.isExpired(token)) {
+            //status code 451
+            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+        }
         try{
             orderService.updateOrder(id, order);
             return new ResponseEntity<>("Order updated successfully", HttpStatus.OK);

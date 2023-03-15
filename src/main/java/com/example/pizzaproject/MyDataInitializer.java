@@ -1,6 +1,9 @@
 package com.example.pizzaproject;
 
 import com.example.pizzaproject.pizza.PizzaRepository;
+import com.example.pizzaproject.user.User;
+import com.example.pizzaproject.user.UserRepository;
+import com.example.pizzaproject.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
