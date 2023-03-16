@@ -69,7 +69,8 @@ public class UserController {
             }
         } else {
             // User not found
-            return UserService.createErrorResponse();
+            JwtResponse response = new JwtResponse("failure", null, null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 

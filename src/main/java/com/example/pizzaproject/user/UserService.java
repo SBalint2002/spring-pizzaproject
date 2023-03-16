@@ -64,6 +64,7 @@ public class UserService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    //Response code 403
     public static ResponseEntity<JwtResponse> createErrorResponse() {
         JwtResponse response = new JwtResponse("failure", null, null);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
