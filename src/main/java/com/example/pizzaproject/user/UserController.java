@@ -142,7 +142,17 @@ public class UserController {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
         }
-        if (AccessUtil.isAdminFromJWTToken(token) || userId.equals(userService.getUserIdFromToken(token))){
+        //Only admin
+        if (AccessUtil.isAdminFromJWTToken(token)){
+            try {
+                userService.updateUserAdmin(userId, user);
+                return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+            } catch (IllegalStateException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            }
+        }
+        //If not admin
+        if (userId.equals(userService.getUserIdFromToken(token)) && !AccessUtil.isAdminFromJWTToken(token)){
             try {
                 userService.updateUser(userId, user);
                 return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
@@ -152,5 +162,4 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The user must be admin or can modify only its own information.");
     }
-
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -33,6 +34,7 @@ public class AccessUtil {
                 .setExpiration(expiration)
                 .signWith(signatureAlgorithm, apiKeySecretBytes)
                 .claim("role", user.isAdmin() ? "admin" : "user")
+                .claim("id", user.getId())
                 .compact();
     }
 
@@ -41,7 +43,7 @@ public class AccessUtil {
         return Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public static Boolean isAdminFromJWTToken(String token){
+    public static Boolean isAdminFromJWTToken(String token) {
         byte[] apiKeySecretBytes = secret.getBytes();
         Claims claims = Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody();
         String role = (String) claims.get("role");

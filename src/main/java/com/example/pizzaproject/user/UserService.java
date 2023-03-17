@@ -50,6 +50,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     public Long getUserIdFromToken(String token) {
         Optional<User> user = findUserByEmail(getEmailFromJWTToken(token));
         return user.map(User::getId).orElse(null);
@@ -70,7 +71,7 @@ public class UserService {
     public static ResponseEntity<JwtResponse> createResponse(User user) {
         String jwtToken = AccessUtil.createJWT(user);
         String refreshToken = RefreshUtil.createRefreshToken(user);
-        JwtResponse response = new JwtResponse("success",jwtToken, refreshToken);
+        JwtResponse response = new JwtResponse("success", jwtToken, refreshToken);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -88,10 +89,28 @@ public class UserService {
     }
 
     @Transactional
+    public void updateUserAdmin(Long userId, User updateUser) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
+        updateUserInformation(user, updateUser);
+        if (updateUser.isAdmin()) {
+            user.setAdmin(true);
+        }
+        if (!updateUser.isAdmin()) {
+            user.setAdmin(false);
+        }
+        System.out.println(user);
+    }
+
+    @Transactional
     public void updateUser(Long userId, User updateUser) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
+        updateUserInformation(user, updateUser);
+    }
 
+    @Transactional
+    private void updateUserInformation(User user, User updateUser) {
         if (updateUser.getFirst_name() != null && updateUser.getFirst_name().length() > 0) {
             user.setFirst_name(updateUser.getFirst_name());
         }
@@ -105,14 +124,8 @@ public class UserService {
             }
             user.setEmail(updateUser.getEmail());
         }
-        if (updateUser.getPassword() != null) {
+        if (updateUser.getPassword() != null && updateUser.getPassword().length() > 6) {
             user.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-        }
-        if (updateUser.isAdmin()) {
-            user.setAdmin(true);
-        }
-        if (!updateUser.isAdmin()) {
-            user.setAdmin(false);
         }
     }
 }
