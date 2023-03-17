@@ -62,10 +62,4 @@ public class PizzaService {
             pizza.setAvailable(false);
         }
     }
-    public void deletePizza(long pizzaId){
-        if (!pizzaRepository.existsById(pizzaId)) {
-            throw new IllegalStateException("pizza with id " + pizzaId + " does not exist");
-        }
-       pizzaRepository.deleteById(pizzaId);
-    }
 }

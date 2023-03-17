@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.example.pizzaproject.auth.JwtResponse;
-import com.example.pizzaproject.auth.JwtUtil;
+import com.example.pizzaproject.auth.AccessUtil;
 import com.example.pizzaproject.auth.RefreshUtil;
 import jakarta.transaction.Transactional;
 
@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import static com.example.pizzaproject.auth.AccessUtil.getEmailFromJWTToken;
 
 @Service
 public class UserService {
@@ -48,6 +50,14 @@ public class UserService {
         }
         return Optional.empty();
     }
+    public Long getUserIdFromToken(String token) {
+        Optional<User> user = findUserByEmail(getEmailFromJWTToken(token));
+        return user.map(User::getId).orElse(null);
+    }
+
+    public boolean isAdminAndTokenNotExpired(String token) {
+        return AccessUtil.isAdminFromJWTToken(token) && !AccessUtil.isExpired(token);
+    }
 
     public Optional<User> findUserByEmail(String email) {
         Optional<User> user = userRepository.findUserByEmail(email);
@@ -58,7 +68,7 @@ public class UserService {
     }
 
     public static ResponseEntity<JwtResponse> createResponse(User user) {
-        String jwtToken = JwtUtil.createJWT(user);
+        String jwtToken = AccessUtil.createJWT(user);
         String refreshToken = RefreshUtil.createRefreshToken(user);
         JwtResponse response = new JwtResponse("success",jwtToken, refreshToken);
         return new ResponseEntity<>(response, HttpStatus.OK);

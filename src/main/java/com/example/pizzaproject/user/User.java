@@ -34,12 +34,13 @@ public class User {
         this.admin = admin;
     }
 
-    //Főbb felhasználói adatok (név, email), valszeg bejelentkezéshez majd
-    public User(String first_name, String last_name, String email, String password) {
+    //Regisztrálás
+    public User(String first_name, String last_name, String email, String password, boolean admin) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
+        this.admin = admin;
     }
 
     //Rendelés lekérdezése felhasználó név és email címmel

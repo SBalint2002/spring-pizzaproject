@@ -1,17 +1,13 @@
 package com.example.pizzaproject.pizza;
 
-import com.example.pizzaproject.auth.JwtUtil;
-import com.example.pizzaproject.user.User;
-import com.example.pizzaproject.user.UserResponseDto;
+import com.example.pizzaproject.auth.AccessUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
@@ -32,52 +28,43 @@ public class PizzaController {
     }
 
     @PostMapping(path = "/add-pizza")
-    public ResponseEntity<String> addNewPizza(
+    public ResponseEntity<?> addNewPizza(
             @RequestBody Pizza pizza,
             @RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
-        if (JwtUtil.isExpired(token)) {
+        if (AccessUtil.isExpired(token)) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
         }
-        try {
-            pizzaService.addNewPizza(pizza);
-            return new ResponseEntity<>("Sikeres", HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>("Nem sikerült", e.getStatusCode());
+        if (AccessUtil.isAdminFromJWTToken(token)){
+            try {
+                pizzaService.addNewPizza(pizza);
+                return new ResponseEntity<>("Pizza uploaded successfully", HttpStatus.OK);
+            } catch (ResponseStatusException e) {
+                return new ResponseEntity<>("Pizza could not been uploaded", e.getStatusCode());
+            }
         }
-
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to upload new pizza");
     }
 
     @PutMapping(path = "{pizzaId}")
-    public ResponseEntity<String> updatePizza(
+    public ResponseEntity<?> updatePizza(
             @PathVariable("pizzaId") Long pizzaId,
             @RequestBody(required = false) Pizza pizza,
             @RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
-        if (JwtUtil.isExpired(token)) {
+        if (AccessUtil.isExpired(token)) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
         }
-        try {
-            pizzaService.updatePizza(pizzaId, pizza);
-            System.out.println(pizza.toString());
-            return new ResponseEntity<>("Pizza updated successfully", HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        if (AccessUtil.isAdminFromJWTToken(token)){
+            try {
+                pizzaService.updatePizza(pizzaId, pizza);
+                return new ResponseEntity<>("Pizza updated successfully", HttpStatus.OK);
+            } catch (IllegalStateException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            }
         }
-    }
-
-    @DeleteMapping(path = "{pizzaId}")
-    public ResponseEntity<String> deletePizza(
-            @PathVariable("pizzaId") Long pizzaId,
-            @RequestHeader("Authorization") String authorization) {
-        String token = authorization.substring(7);
-        if (JwtUtil.isExpired(token)) {
-            //status code 451
-            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
-        }
-        pizzaService.deletePizza(pizzaId);
-        return new ResponseEntity<>("Pizza deleted successfully", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
     }
 }

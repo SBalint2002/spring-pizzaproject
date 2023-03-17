@@ -2,6 +2,7 @@ package com.example.pizzaproject.auth;
 
 import com.example.pizzaproject.user.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -12,13 +13,14 @@ import java.util.Date;
 public class RefreshUtil {
 
     private static final String secret = "olUo6BXAlnmeWQJA5NLMy8rISeO4qfkhlPL9P6FM";
-    private static final long refreshExpirationMs = 2592000000L; // 30 nap
+    private static final long expirationMs = 2592000000L; // 30 nap
+    //private static final long expirationMs = 60000; // 1 perc
 
     public static String createRefreshToken(User user) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        Date expiration = new Date(nowMillis + refreshExpirationMs);
+        Date expiration = new Date(nowMillis + expirationMs);
         byte[] apiKeySecretBytes = secret.getBytes();
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -34,9 +36,14 @@ public class RefreshUtil {
     }
 
     public static boolean isExpired(String token) {
-        Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
-        Date expirationDate = claims.getExpiration();
-        return expirationDate.before(new Date());
+        try{
+            Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
+            Date expirationDate = claims.getExpiration();
+            return expirationDate.before(new Date());
+        } catch (ExpiredJwtException error){
+            return true;
+        }
+
     }
 }
 

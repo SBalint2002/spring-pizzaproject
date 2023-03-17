@@ -1,6 +1,6 @@
 package com.example.pizzaproject.order;
 
-import com.example.pizzaproject.auth.JwtUtil;
+import com.example.pizzaproject.auth.AccessUtil;
 import com.example.pizzaproject.pizza.Pizza;
 import com.example.pizzaproject.pizza.PizzaRepository;
 import com.example.pizzaproject.user.User;
@@ -34,8 +34,12 @@ public class OrderController {
     }
 
     @GetMapping(path = "/get-all")
-    public List<Order> getOrders() {
-        return orderService.getOrders();
+    public ResponseEntity<?> getOrders(@RequestHeader("Authorization") String authorization) {
+        String token = authorization.substring(7);
+        if (AccessUtil.isAdminFromJWTToken(token)){
+            return ResponseEntity.ok(orderService.getOrders());
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
     }
 
 
@@ -44,12 +48,12 @@ public class OrderController {
             @RequestBody OrderDto orderDto,
             @RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
-        if (JwtUtil.isExpired(token) || token.isEmpty()) {
+        if (AccessUtil.isExpired(token) || token.isEmpty()) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
         }
         try {
-            String email = JwtUtil.getEmailFromJWTToken(token);
+            String email = AccessUtil.getEmailFromJWTToken(token);
             Optional<User> user = userService.findUserByEmail(email);
             int price = orderService.sumPrice(orderDto.getPizzaIds());
             Order order = new Order(
@@ -72,20 +76,23 @@ public class OrderController {
     }
 
     @PutMapping(path = "{orderId}")
-    public ResponseEntity<String> updateOrder(
+    public ResponseEntity<?> updateOrder(
             @PathVariable("orderId") Long id,
             @RequestBody(required = false) Order order,
             @RequestHeader("Authorization") String authorization){
         String token = authorization.substring(7);
-        if (JwtUtil.isExpired(token)) {
+        if (AccessUtil.isExpired(token)) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
         }
-        try{
-            orderService.updateOrder(id, order);
-            return new ResponseEntity<>("Order updated successfully", HttpStatus.OK);
-        } catch (IllegalStateException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        if (AccessUtil.isAdminFromJWTToken(token)){
+            try{
+                orderService.updateOrder(id, order);
+                return new ResponseEntity<>("Order updated successfully", HttpStatus.OK);
+            } catch (IllegalStateException e){
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            }
         }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to modify order");
     }
 }

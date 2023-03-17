@@ -1,19 +1,25 @@
 package com.example.pizzaproject.auth;
 
 import com.example.pizzaproject.user.User;
+import com.example.pizzaproject.user.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Component
-public class JwtUtil {
+public class AccessUtil {
+    @Autowired
+    private UserService userService;
     private static final String secret = "1KoOpQKyVv5Yxkj4LHxjBgLjpczO6L8P0lq87LDi";
     private static final long expirationMs = 300000; // 5 perc
     //private static final long expirationMs = 60000; // 1 perc
+    //private static final long expirationMs = 10000; // 10 másodperc
 
     public static String createJWT(User user) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -26,12 +32,20 @@ public class JwtUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(signatureAlgorithm, apiKeySecretBytes)
+                .claim("role", user.isAdmin() ? "admin" : "user")
                 .compact();
     }
 
     public static String getEmailFromJWTToken(String token) {
         byte[] apiKeySecretBytes = secret.getBytes();
         return Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public static Boolean isAdminFromJWTToken(String token){
+        byte[] apiKeySecretBytes = secret.getBytes();
+        Claims claims = Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody();
+        String role = (String) claims.get("role");
+        return role != null && role.equals("admin");
     }
 
     public static boolean isExpired(String token) {
@@ -42,6 +56,5 @@ public class JwtUtil {
         } catch (ExpiredJwtException error) {
             return true;
         }
-
     }
 }
