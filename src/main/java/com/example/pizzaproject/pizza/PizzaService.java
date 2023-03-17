@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,7 +36,7 @@ public class PizzaService {
         Pizza pizza = pizzaRepository.findById(pizzaId)
                 .orElseThrow(() -> new IllegalStateException("Pizza with id " + pizzaId + " does not exist"));
 
-        if (updatePizza.getName() != null && updatePizza.getName().length() > 0){
+        if (updatePizza.getName() != null && updatePizza.getName().length() > 0 && !Objects.equals(updatePizza.getName(), pizza.getName())){
             Optional<Pizza> pizzaOptional = pizzaRepository.findPizzaByName(updatePizza.getName());
             if (pizzaOptional.isPresent()){
                 throw new IllegalStateException("Pizza name is taken");
