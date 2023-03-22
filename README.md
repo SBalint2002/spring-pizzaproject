@@ -25,13 +25,20 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:8080/user/7  
-Content-Type: application/json  
-Authorization: Bearer accessToken
+POST http://localhost:8080/user/admin-login
+Content-Type: application/json
+
+{
+  "email": "tesztelek@gmail.com",
+  "password": "Adminadmin1"
+}
+
+###
+POST http://localhost:8080/user/refresh  
+Content-Type: application/json   
 
 {  
-"first_name": "Sárándi",  
-"password": "Adminadmin1"  
+"refreshToken": "refreshToken"
 }
 
 ###
@@ -40,11 +47,13 @@ Content-Type: application/json
 Authorization: Bearer accessToken
 
 ###
-POST http://localhost:8080/user/refresh  
-Content-Type: application/json   
+PUT http://localhost:8080/user/7  
+Content-Type: application/json  
+Authorization: Bearer accessToken
 
 {  
-"refreshToken": "refreshToken"
+"first_name": "Elek",  
+"password": "Adminadmin1"  
 }
 
 ###
@@ -67,10 +76,10 @@ Content-Type: application/json
 Authorization: Bearer accessToken
 
 {  
-"name": "Elérhetőgec",  
-"price": "1986",  
+"name": "Sajtos",  
+"price": "2100",  
 "description": "fincsmincsa",  
-"picture": "https://granteetterem.hu/wp-content/uploads/2021/02/Pizza-Prosciutto-Crudo-600x400.jpg",  
+"picture": "{képlink}",  
 "available": true  
 }
 
@@ -80,10 +89,10 @@ Content-Type: application/json
 Authorization: Bearer accessToken
 
 {  
-"name": "Sonkássss",  
+"name": "Sonkás",  
 "price": "1765",  
-"description": "Asd",  
-"picture": "xd"  
+"description": "Jó",  
+"picture": "{képlink}"  
 }
 
 ###
