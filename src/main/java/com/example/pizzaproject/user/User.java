@@ -1,9 +1,22 @@
 package com.example.pizzaproject.user;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+
 @Entity
-@Table(name="USERS")
-public class User {
+@Table(name="users")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Data
+@Builder
+@Getter
+public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -15,98 +28,36 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-    @Column(name = "admin")
-    private boolean admin;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-
-    //Üres konstruktor
-    public User() {
-
-    }
-
-    //Mindent is kérek
-    public User(Long id, String first_name, String last_name, String email, String password, boolean admin) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
-        this.admin = admin;
-    }
-
-    //Regisztrálás
-    public User(String first_name, String last_name, String email, String password, boolean admin) {
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
-        this.admin = admin;
-    }
-
-    //Rendelés lekérdezése felhasználó név és email címmel
-    public User(String first_name, String last_name, String email){
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", email='" + email + '\'' +
-                ", password=" + password +
-                ", admin=" + admin +
-                '}';
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

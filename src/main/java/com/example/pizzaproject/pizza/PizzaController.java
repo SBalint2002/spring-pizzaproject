@@ -14,8 +14,7 @@ import java.util.List;
 @RequestMapping(path = "/pizza")
 public class PizzaController {
 
-    @Autowired
-    private PizzaService pizzaService;
+    private final PizzaService pizzaService;
 
     @Autowired
     public PizzaController(PizzaService pizzaService) {
@@ -39,9 +38,9 @@ public class PizzaController {
         if (AccessUtil.isAdminFromJWTToken(token)){
             try {
                 pizzaService.addNewPizza(pizza);
-                return new ResponseEntity<>("Pizza uploaded successfully", HttpStatus.OK);
+                return ResponseEntity.status(HttpStatus.OK).body("Pizza uploaded successfully");
             } catch (ResponseStatusException e) {
-                return new ResponseEntity<>("Pizza could not been uploaded", e.getStatusCode());
+                return ResponseEntity.status(e.getStatusCode()).body("Pizza could not been uploaded");
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to upload new pizza");
@@ -60,9 +59,9 @@ public class PizzaController {
         if (AccessUtil.isAdminFromJWTToken(token)){
             try {
                 pizzaService.updatePizza(pizzaId, pizza);
-                return new ResponseEntity<>("Pizza updated successfully", HttpStatus.OK);
+                return ResponseEntity.status(HttpStatus.OK).body("Pizza updated successfully");
             } catch (IllegalStateException e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");

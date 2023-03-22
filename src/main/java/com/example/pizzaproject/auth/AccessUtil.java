@@ -1,22 +1,16 @@
 package com.example.pizzaproject.auth;
 
 import com.example.pizzaproject.user.User;
-import com.example.pizzaproject.user.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class AccessUtil {
-    @Autowired
-    private UserService userService;
     private static final String secret = "1KoOpQKyVv5Yxkj4LHxjBgLjpczO6L8P0lq87LDi";
     private static final long expirationMs = 300000; // 5 perc
     //private static final long expirationMs = 60000; // 1 perc
@@ -33,7 +27,7 @@ public class AccessUtil {
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(signatureAlgorithm, apiKeySecretBytes)
-                .claim("role", user.isAdmin() ? "admin" : "user")
+                .claim("role", user.getRole())
                 .claim("id", user.getId())
                 .compact();
     }
@@ -47,7 +41,7 @@ public class AccessUtil {
         byte[] apiKeySecretBytes = secret.getBytes();
         Claims claims = Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody();
         String role = (String) claims.get("role");
-        return role != null && role.equals("admin");
+        return role != null && role.equals("ADMIN");
     }
 
     public static boolean isExpired(String token) {

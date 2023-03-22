@@ -40,6 +40,7 @@ public class UserService {
         if (existingUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already taken");
         }
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 
@@ -56,29 +57,20 @@ public class UserService {
         return user.map(User::getId).orElse(null);
     }
 
-    public boolean isAdminAndTokenNotExpired(String token) {
-        return AccessUtil.isAdminFromJWTToken(token) && !AccessUtil.isExpired(token);
-    }
-
     public Optional<User> findUserByEmail(String email) {
-        Optional<User> user = userRepository.findUserByEmail(email);
-        if (user.isPresent()) {
-            return user;
-        }
-        return Optional.empty();
+        return userRepository.findUserByEmail(email);
     }
 
-    public static ResponseEntity<JwtResponse> createResponse(User user) {
+    public ResponseEntity<JwtResponse> createResponse(User user) {
         String jwtToken = AccessUtil.createJWT(user);
         String refreshToken = RefreshUtil.createRefreshToken(user);
-        JwtResponse response = new JwtResponse("success", jwtToken, refreshToken);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        JwtResponse response = new JwtResponse(jwtToken, refreshToken);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    //Response code 403
-    public static ResponseEntity<JwtResponse> createErrorResponse() {
-        JwtResponse response = new JwtResponse("failure", null, null);
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    public ResponseEntity<JwtResponse> createErrorResponse() {
+        JwtResponse response = new JwtResponse(null, null);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     public void deleteUser(Long userId) {
@@ -93,13 +85,12 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
         updateUserInformation(user, updateUser);
-        if (updateUser.isAdmin()) {
-            user.setAdmin(true);
+        if (updateUser.getRole() == Role.ADMIN) {
+            user.setRole(Role.ADMIN);
         }
-        if (!updateUser.isAdmin()) {
-            user.setAdmin(false);
+        if (updateUser.getRole() == Role.USER) {
+            user.setRole(Role.USER);
         }
-        System.out.println(user);
     }
 
     @Transactional
