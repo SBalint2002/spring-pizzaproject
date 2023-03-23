@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,15 +33,22 @@ public class OrderController {
 
     @GetMapping(path = "/get-all")
     public ResponseEntity<?> getOrders(@RequestHeader("Authorization") String authorization) {
-        String token = authorization.substring(7);
-        if (AccessUtil.isExpired(token) || token.isEmpty()) {
-            //status code 451
-            return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+        try {
+            String token = authorization.substring(7);
+            if (AccessUtil.isExpired(token)) {
+                //status code 451
+                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+            }
+            if (AccessUtil.isAdminFromJWTToken(token)) {
+                return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a 500 error with the exception message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-        if (AccessUtil.isAdminFromJWTToken(token)) {
-            return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
     }
 
 

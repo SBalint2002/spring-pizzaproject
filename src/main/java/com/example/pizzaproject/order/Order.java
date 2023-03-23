@@ -1,7 +1,11 @@
 package com.example.pizzaproject.order;
 
 import com.example.pizzaproject.pizza.Pizza;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +14,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +39,7 @@ public class Order implements Serializable {
     @Column(name = "ready")
     private boolean ready;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderPizza> orderPizzas;
 
     public Order(Long user_id, String location, Date order_date, int price, String phone_number, boolean ready){
@@ -43,82 +50,6 @@ public class Order implements Serializable {
         this.phone_number = phone_number;
         this.ready = ready;
         this.orderPizzas = new ArrayList<>();
-    }
-
-    public List<OrderPizza> getOrderPizzas() {
-        return orderPizzas;
-    }
-
-    public void setOrderPizzas(List<OrderPizza> orderPizzas) {
-        this.orderPizzas = orderPizzas;
-    }
-
-    public Order() {
-    }
-
-    public Order(Long id, Long user_id, String location, Date order_date, int price, String phone_number, boolean ready) {
-        this.id = id;
-        this.user_id = user_id;
-        this.location = location;
-        this.order_date = order_date;
-        this.price = price;
-        this.phone_number = phone_number;
-        this.ready = ready;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Date getOrder_date() {
-        return order_date;
-    }
-
-    public void setOrder_date(Date order_date) {
-        this.order_date = order_date;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getPhone_number() {
-        return phone_number;
-    }
-
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
-    }
-
-    public boolean isReady() {
-        return ready;
-    }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
     }
 
     public void addPizza(Pizza pizza) {

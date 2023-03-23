@@ -13,12 +13,12 @@ import java.util.List;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    @Autowired
-    private PizzaRepository pizzaRepository;
+    private final PizzaRepository pizzaRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, PizzaRepository pizzaRepository) {
         this.orderRepository = orderRepository;
+        this.pizzaRepository = pizzaRepository;
     }
 
     public List<Order> getOrders() {
