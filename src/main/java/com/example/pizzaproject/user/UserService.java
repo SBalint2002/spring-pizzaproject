@@ -81,7 +81,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserAdmin(Long userId, User updateUser) {
+    public void updateUserAdmin(Long userId, UserUpdateModel updateUser) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
         updateUserInformation(user, updateUser);
@@ -94,14 +94,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, User updateUser) {
+    public void updateUser(Long userId, UserUpdateModel updateUser) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
         updateUserInformation(user, updateUser);
     }
 
     @Transactional
-    private void updateUserInformation(User user, User updateUser) {
+    private void updateUserInformation(User user, UserUpdateModel updateUser) {
         if (updateUser.getFirst_name() != null && updateUser.getFirst_name().length() > 0) {
             user.setFirst_name(updateUser.getFirst_name());
         }

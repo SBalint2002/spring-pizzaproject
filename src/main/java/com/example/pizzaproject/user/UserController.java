@@ -4,6 +4,7 @@ import com.example.pizzaproject.auth.JwtResponse;
 import com.example.pizzaproject.auth.AccessUtil;
 import com.example.pizzaproject.auth.RefreshRequest;
 import com.example.pizzaproject.auth.RefreshUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping(path = "/register")
-    public ResponseEntity<?> registerNewUser(@RequestBody UserRegisterModel user) {
+    public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterModel user) {
         try {
             User newUser = User.builder()
                     .first_name(user.getFirst_name())
@@ -132,7 +133,7 @@ public class UserController {
     @PutMapping(path = "{userId}")
     public ResponseEntity<?> updateUser(
             @PathVariable("userId") Long userId,
-            @RequestBody(required = false) User user,
+            @RequestBody(required = false) UserUpdateModel user,
             @RequestHeader("Authorization") String authorization) {
         String token = authorization.substring(7);
         if (AccessUtil.isExpired(token)) {

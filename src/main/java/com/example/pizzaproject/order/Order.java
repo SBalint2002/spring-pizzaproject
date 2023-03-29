@@ -1,7 +1,6 @@
 package com.example.pizzaproject.order;
 
 import com.example.pizzaproject.pizza.Pizza;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
