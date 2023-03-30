@@ -51,6 +51,26 @@ public class OrderController {
         }
     }
 
+    @GetMapping(path = "/get-new-orders")
+    public ResponseEntity<?> getNewOrders(@RequestHeader("Authorization") String authorization) {
+        try {
+            String token = authorization.substring(7);
+            if (AccessUtil.isExpired(token)) {
+                //status code 451
+                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+            }
+            if (AccessUtil.isAdminFromJWTToken(token)) {
+                return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrdersByIdsInNewOrders());
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a 500 error with the exception message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 
     @PostMapping(path = "/add-order")
     public ResponseEntity<String> addNewOrder(

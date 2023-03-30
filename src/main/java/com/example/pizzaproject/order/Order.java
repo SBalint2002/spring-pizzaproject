@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Order implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,19 +55,5 @@ public class Order implements Serializable {
 
     public void addPizza(Pizza pizza) {
         orderPizzas.add(new OrderPizza(this, pizza));
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", user_id=" + user_id +
-                ", location='" + location + '\'' +
-                ", order_date=" + order_date +
-                ", price=" + price +
-                ", phone_number='" + phone_number + '\'' +
-                ", ready=" + ready +
-                ", orderPizzas=" + orderPizzas +
-                '}';
     }
 }
