@@ -114,6 +114,10 @@ GET http://localhost:8080/order/get-all
 Authorization: Bearer accessToken
 
 ###
+GET http://localhost:8080/order/get-new-orders
+Authorization: Bearer accessToken
+
+###
 PUT http://localhost:8080/order/1  
 Content-Type: application/json  
 Authorization: Bearer accessToken
