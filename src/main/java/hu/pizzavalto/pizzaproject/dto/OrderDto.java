@@ -17,7 +17,7 @@ public class OrderDto {
     private String location;
 
     @NotBlank
-    @Size(min = 2, max = 20)
+    @Size(min = 8, max = 10)
     private String phoneNumber;
 
     @NotBlank

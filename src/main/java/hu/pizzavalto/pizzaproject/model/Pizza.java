@@ -31,8 +31,4 @@ public class Pizza {
     @JsonIgnore
     @OneToMany(mappedBy = "pizza")
     private List<OrderPizza> orderPizzas;
-
-    public List<OrderPizza> getOrderPizzas() {
-        return orderPizzas;
-    }
 }
