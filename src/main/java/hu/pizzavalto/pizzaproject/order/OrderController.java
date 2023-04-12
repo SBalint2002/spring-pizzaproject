@@ -55,6 +55,22 @@ public class OrderController {
         }
     }
 
+    @GetMapping(path = "/get-orders")
+    public ResponseEntity<?> getOrdersById(@RequestHeader("Authorization") String authorization) {
+        try {
+            if (AccessUtil.isExpired(getToken(authorization))) {
+                //status code 451
+                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
+            }
+                return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderById(getToken(authorization)));
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a 500 error with the exception message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping(path = "/get-new-orders")
     public ResponseEntity<?> getNewOrders(@RequestHeader("Authorization") String authorization) {
         try {

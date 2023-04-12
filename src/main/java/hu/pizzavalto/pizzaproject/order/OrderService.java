@@ -6,6 +6,8 @@ import hu.pizzavalto.pizzaproject.model.Pizza;
 import hu.pizzavalto.pizzaproject.repository.PizzaRepository;
 import hu.pizzavalto.pizzaproject.repository.NewOrderRepository;
 import hu.pizzavalto.pizzaproject.repository.OrderRepository;
+import hu.pizzavalto.pizzaproject.repository.UserRepository;
+import hu.pizzavalto.pizzaproject.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,15 +18,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.jpa.domain.Specification.where;
+
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final UserService userService;
     private final PizzaRepository pizzaRepository;
     private final NewOrderRepository newOrderRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, PizzaRepository pizzaRepository, NewOrderRepository newOrderRepository) {
+    public OrderService(OrderRepository orderRepository, UserService userService, PizzaRepository pizzaRepository, NewOrderRepository newOrderRepository) {
         this.orderRepository = orderRepository;
+        this.userService = userService;
         this.pizzaRepository = pizzaRepository;
         this.newOrderRepository = newOrderRepository;
     }
@@ -57,12 +63,9 @@ public class OrderService {
         return sum;
     }
 
-    public NewOrder findNewOrderById(Long id) {
-        return newOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Order with id " + id + " does not exist"));
+    public List<Order> getOrderById(String token) {
+       return orderRepository.findOrdersByUserId(userService.getUserIdFromToken(token));
     }
-
-
 
     @Transactional
     public void updateOrder(Long orderId, Order updateOrder) {

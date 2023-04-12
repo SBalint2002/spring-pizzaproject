@@ -22,7 +22,7 @@ public class Order implements Serializable {
     private Long id;
 
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
 
     @Column(name = "location")
     private String location;
@@ -42,8 +42,8 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderPizza> orderPizzas;
 
-    public Order(Long user_id, String location, Date order_date, int price, String phone_number, boolean ready){
-        this.user_id = user_id;
+    public Order(Long userId, String location, Date order_date, int price, String phone_number, boolean ready){
+        this.userId = userId;
         this.location = location;
         this.order_date = order_date;
         this.price = price;
