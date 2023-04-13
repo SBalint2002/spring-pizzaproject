@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -104,6 +105,10 @@ public class OrderController {
             Optional<User> user = userService.findUserByEmail(email);
             int price = orderService.sumPrice(orderDto.getPizzaIds());
             if (user.isPresent()){
+                List<Pizza> pizzas = pizzaRepository.findAllById(orderDto.getPizzaIds());
+                if (pizzas.size() < orderDto.getPizzaIds().size()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "One or more pizzas not found");
+                }
                 Order order = new Order(
                         user.get().getId(),
                         orderDto.getLocation(),
@@ -111,11 +116,7 @@ public class OrderController {
                         price,
                         orderDto.getPhoneNumber(),
                         false);
-                for (Long pizzaId : orderDto.getPizzaIds()) {
-                    Pizza pizza = pizzaRepository.findById(pizzaId)
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza not found"));
-                    order.addPizza(pizza);
-                }
+                order.addPizzas(pizzas);
                 orderService.addNewOrder(order);
                 return ResponseEntity.status(HttpStatus.OK).body("Order added successfully");
             } else {
@@ -125,6 +126,7 @@ public class OrderController {
             return ResponseEntity.status(e.getStatusCode()).body("Order could not be added: " + e.getMessage());
         }
     }
+
 
     @PutMapping(path = "{orderId}")
     public ResponseEntity<?> updateOrder(

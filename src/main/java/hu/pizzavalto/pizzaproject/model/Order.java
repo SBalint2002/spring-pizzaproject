@@ -52,7 +52,9 @@ public class Order implements Serializable {
         this.orderPizzas = new ArrayList<>();
     }
 
-    public void addPizza(Pizza pizza) {
-        orderPizzas.add(new OrderPizza(this, pizza));
+    public void addPizzas(List<Pizza> pizzas) {
+        for (Pizza pizza : pizzas) {
+            orderPizzas.add(new OrderPizza(this, pizza));
+        }
     }
 }

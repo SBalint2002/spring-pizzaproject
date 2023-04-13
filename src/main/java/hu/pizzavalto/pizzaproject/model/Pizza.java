@@ -24,7 +24,6 @@ public class Pizza {
     private String description;
     @Column(name = "picture")
     private String picture;
-
     @Column(name = "available")
     private boolean available;
 
