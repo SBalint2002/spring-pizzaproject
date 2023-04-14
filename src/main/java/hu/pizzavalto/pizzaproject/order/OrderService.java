@@ -6,7 +6,6 @@ import hu.pizzavalto.pizzaproject.model.Pizza;
 import hu.pizzavalto.pizzaproject.repository.PizzaRepository;
 import hu.pizzavalto.pizzaproject.repository.NewOrderRepository;
 import hu.pizzavalto.pizzaproject.repository.OrderRepository;
-import hu.pizzavalto.pizzaproject.repository.UserRepository;
 import hu.pizzavalto.pizzaproject.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class OrderService {

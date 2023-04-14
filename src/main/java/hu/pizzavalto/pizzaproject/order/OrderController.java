@@ -7,17 +7,17 @@ import hu.pizzavalto.pizzaproject.dto.OrderDto;
 import hu.pizzavalto.pizzaproject.repository.PizzaRepository;
 import hu.pizzavalto.pizzaproject.model.User;
 import hu.pizzavalto.pizzaproject.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
+@Slf4j
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 @RequestMapping(path = "/order")
 public class OrderController {
@@ -96,6 +96,8 @@ public class OrderController {
     public ResponseEntity<String> addNewOrder(
             @RequestBody OrderDto orderDto,
             @RequestHeader("Authorization") String authorization) {
+            log.info(orderDto.toString());
+            log.info(authorization);
         if (AccessUtil.isExpired(getToken(authorization)) || getToken(authorization).isEmpty()) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
@@ -106,7 +108,9 @@ public class OrderController {
             int price = orderService.sumPrice(orderDto.getPizzaIds());
             if (user.isPresent()){
                 List<Pizza> pizzas = pizzaRepository.findAllById(orderDto.getPizzaIds());
-                if (pizzas.size() < orderDto.getPizzaIds().size()) {
+                Set<Long> ids = new HashSet<>(orderDto.getPizzaIds());
+                if (ids.size() != pizzas.size()) {
+                    log.info("Error {} {}", pizzas.size(), orderDto.getPizzaIds().size());
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "One or more pizzas not found");
                 }
                 Order order = new Order(
