@@ -59,7 +59,7 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new IllegalStateException("User with id " + userId + " does not exist");
+            throw new IllegalStateException("Felhasználó " + userId + " azonosítóval nem létezik!");
         }
         userRepository.deleteById(userId);
     }
@@ -67,7 +67,7 @@ public class UserService {
     @Transactional
     public void updateUserAdmin(Long userId, UserUpdateDto updateUser) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
+                .orElseThrow(() -> new IllegalStateException("Felhasználó " + userId + " azonosítóval nem létezik!"));
         updateUserInformation(user, updateUser);
         if (updateUser.getRole() == Role.ADMIN) {
             user.setRole(Role.ADMIN);
@@ -80,7 +80,7 @@ public class UserService {
     @Transactional
     public void updateUser(Long userId, UserUpdateDto updateUser) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User with id " + userId + " does not exist"));
+                .orElseThrow(() -> new IllegalStateException("Felhasználó " + userId + " azonosítóval nem létezik!"));
         updateUserInformation(user, updateUser);
     }
 
@@ -95,7 +95,7 @@ public class UserService {
         if (updateUser.getEmail() != null && updateUser.getEmail().length() > 0 && !Objects.equals(updateUser.getEmail(), user.getEmail())) {
             Optional<User> userOptional = userRepository.findUserByEmail(updateUser.getEmail());
             if (userOptional.isPresent()) {
-                throw new IllegalStateException("Email is taken");
+                throw new IllegalStateException("Email cím foglalt!");
             }
             user.setEmail(updateUser.getEmail());
         }

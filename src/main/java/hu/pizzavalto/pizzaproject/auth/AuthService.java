@@ -27,7 +27,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Optional<User> existingUser = userRepository.findUserByEmail(user.getEmail());
         if (existingUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already taken");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Az Email cím már használatban van!");
         }
         user.setRole(Role.USER);
         userRepository.save(user);

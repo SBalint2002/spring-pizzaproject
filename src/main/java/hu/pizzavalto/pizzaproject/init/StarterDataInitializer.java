@@ -34,7 +34,7 @@ public class StarterDataInitializer implements CommandLineRunner {
             try {
                 ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("data.sql"));
             } catch (SQLException e) {
-                throw new RuntimeException("Failed to execute SQL script", e);
+                throw new RuntimeException("SQL fájl futtatása sikertelen volt!", e);
             }
         }
         if (userRepository.count() == 0){

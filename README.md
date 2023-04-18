@@ -1,127 +1,44 @@
-# Http Requestek:
+# PizzaVáltó projekt
+Ez a projekt egy pizza rendelő alkalmazás rendszerét valósítja meg.
+A felhasználók regisztrálhatnak, bejelentkezhetnek, és rendelhetnek pizzát.
+Az admin felhasználók felügyelhetik a rendeléseket az étlapot és a felhasználókat.
 
-accessToken helyére a tényleges accessToken amit a login-ból kapunk meg  
-refreshToken helyére a tényleges refreshTokent
+## Futtatás
+___
 
-# USER -------------------------------
-###
-POST http://localhost:8080/user/register  
-Content-Type: application/json  
-  
-{  
-"first_name": "Elek5",   
-"last_name": "Teszt",  
-"email": "tesztelek5@gmail.com",  
-"password": "Adminadmin1"  
-}
+A projekt a Java 17-ben íródott. A futtatáshoz szükséges:
+- Fejleszői környezet: [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+- Keretrendszer: [Spring Boot](https://spring.io/)
+- Adatbázis kezelő: [MariaDB](https://mariadb.org/)
+- Csomagkezelő: [Maven](https://mvnrepository.com/artifact/org.springframework.boot)
 
-###
-POST http://localhost:8080/user/login  
-Content-Type: application/json
+### Telepítés
 
-{  
-"email": "tesztelek@gmail.com",  
-"password": "Adminadmin1"  
-}
+Ha nincs telepítve az alkalmazás, akkor a következő lépéseket kell végrehajtani:
 
-###
-POST http://localhost:8080/user/admin-login
-Content-Type: application/json
+- Klónozza le a projektet a Gitből a következő paranccsal:
+>git clone https://github.com/SBalint2002/PizzaProject-spring.git
+- Futtassa az alkalmazást az [_Application.java_](https://github.com/SBalint2002/PizzaProject-spring/blob/main/src/main/java/hu/pizzavalto/pizzaproject/Application.java) fájlból (hu.pizzavalto.pizzaproject).
 
-{
-  "email": "tesztelek@gmail.com",
-  "password": "Adminadmin1"
-}
+### Teszt felhasználó
+Az alábbi adatokkal lehet bejelentkezni a teszteléshez egy Adminisztrátor fiókkal:
 
-###
-POST http://localhost:8080/user/refresh  
-Content-Type: application/json   
+>Email: tesztelek@gmail.com
 
-{  
-"refreshToken": "refreshToken"
-}
+>Jelszó: Adminadmin1
 
-###
-GET http://localhost:8080/user/data  
-Content-Type: application/json  
-Authorization: Bearer accessToken
+## Adatbázis
+___
+Az alkalmazás az adatokat egy [MariaDB](https://mariadb.org/) adatbázisban tárolja. Ha az adatbázis nem létezik, az alkalmazás automatikusan létrehozza és feltölti az alapértelmezett adatokkal.
 
-###
-PUT http://localhost:8080/user/7  
-Content-Type: application/json  
-Authorization: Bearer accessToken
+## Funkciók
+___
+Az alkalmazás lehetővé teszi a felhasználók számára, hogy pizzát rendeljenek, valamint nyomon követhessék a rendelés állapotát. Az admin felhasználók kezelni tudják az étlapot és az összes rendelést.
 
-{  
-"first_name": "Elek",  
-"password": "Adminadmin1"  
-}
+Az alábbiakban a funkciók listája található:
 
-###
-GET http://localhost:8080/user/get-all  
-Content-Type: application/json  
-Authorization: Bearer accessToken
-
-###
-DELETE http://localhost:8080/user/6
-Authorization: Bearer accessToken
-
-###
-# PIZZA --------------------------------
-
-GET http://localhost:8080/pizza/get-all
-
-###
-POST http://localhost:8080/pizza/add-pizza   
-Content-Type: application/json  
-Authorization: Bearer accessToken
-
-{  
-"name": "Sajtos",  
-"price": "2100",  
-"description": "fincsmincsa",  
-"picture": "{képlink}",  
-"available": true  
-}
-
-###
-PUT http://localhost:8080/pizza/6  
-Content-Type: application/json  
-Authorization: Bearer accessToken
-
-{  
-"name": "Sonkás",  
-"price": "1765",  
-"description": "Jó",  
-"picture": "{képlink}"  
-}
-
-###
-# ORDER --------------------------------
-
-###
-POST http://localhost:8080/order/add-order  
-Content-Type: application/json  
-Authorization: Bearer accessToken
-
-{  
-"location": "Pokol",  
-"pizzaIds": [ 1, 3, 3 ],  
-"phoneNumber": "0630-345-4375"  
-}
-
-###
-GET http://localhost:8080/order/get-all  
-Authorization: Bearer accessToken
-
-###
-GET http://localhost:8080/order/get-new-orders
-Authorization: Bearer accessToken
-
-###
-PUT http://localhost:8080/order/1  
-Content-Type: application/json  
-Authorization: Bearer accessToken
-
-{  
-"ready": "true"  
-}
+- Regisztráció és bejelentkezés.
+- Pizza keresése és rendelése.
+- Rendelés állapotának nyomon követése.
+- Étlap kezelése.
+- Rendelések kezelése.

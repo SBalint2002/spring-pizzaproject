@@ -47,7 +47,7 @@ public class OrderController {
             if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
                 return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
             }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
         } catch (Exception e) {
             // Log the exception
             e.printStackTrace();
@@ -82,7 +82,7 @@ public class OrderController {
             if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
                 return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrdersByIdsInNewOrders());
             }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
         } catch (Exception e) {
             // Log the exception
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class OrderController {
                 Set<Long> ids = new HashSet<>(orderDto.getPizzaIds());
                 if (ids.size() != pizzas.size()) {
                     log.info("Error {} {}", pizzas.size(), orderDto.getPizzaIds().size());
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "One or more pizzas not found");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza nem található");
                 }
                 Order order = new Order(
                         user.get().getId(),
@@ -122,12 +122,12 @@ public class OrderController {
                         false);
                 order.addPizzas(pizzas);
                 orderService.addNewOrder(order);
-                return ResponseEntity.status(HttpStatus.OK).body("Order added successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("Rendelés sikeresen hozzáadva!");
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Felhasználó nem található!");
             }
         } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body("Order could not be added: " + e.getMessage());
+            return ResponseEntity.status(e.getStatusCode()).body("Rendelés sikertelen: " + e.getMessage());
         }
     }
 
@@ -144,11 +144,11 @@ public class OrderController {
         if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
             try {
                 orderService.updateOrder(id, order);
-                return ResponseEntity.status(HttpStatus.OK).body("Order updated successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("Rendelés módosítása sikeres volt!");
             } catch (IllegalStateException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to modify order");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
     }
 }

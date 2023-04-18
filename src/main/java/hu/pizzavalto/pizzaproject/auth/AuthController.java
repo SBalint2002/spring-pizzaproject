@@ -39,7 +39,7 @@ public class AuthController {
             authService.addNewUser(newUser);
             return userService.createResponse(newUser);
         } catch (ResponseStatusException e) {
-            return ResponseEntity.status(e.getStatusCode()).body("Email is already taken");
+            return ResponseEntity.status(e.getStatusCode()).body("Az Email cím használatban van!");
         }
     }
 
@@ -56,10 +56,10 @@ public class AuthController {
             if (foundUser.get().getRole().equals(Role.ADMIN)) {
                 return userService.createResponse(foundUser.get());
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
             }
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Felhasználó nem található!");
         }
     }
 

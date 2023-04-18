@@ -54,7 +54,7 @@ public class OrderService {
         var sum = 0;
         for (Long pizzaId : pizzaIds){
             Pizza pizza = pizzaRepository.findById(pizzaId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza nem található!"));
             sum += pizza.getPrice();
         }
         return sum;
@@ -67,7 +67,7 @@ public class OrderService {
     @Transactional
     public void updateOrder(Long orderId, Order updateOrder) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalStateException("Order with id " + orderId + " does not exist"));
+                .orElseThrow(() -> new IllegalStateException("Rendelés " + orderId + " azonosítóval nem létezik!"));
 
         if (updateOrder.isReady()) {
             order.setReady(true);

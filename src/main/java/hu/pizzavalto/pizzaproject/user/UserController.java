@@ -57,7 +57,7 @@ public class UserController {
                     .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
     }
 
     @DeleteMapping(path = "{userId}")
@@ -70,9 +70,9 @@ public class UserController {
         }
         if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
             userService.deleteUser(userId);
-            return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body("Felhasználó sikeresen törlésre került!");
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must be an admin to access this resource");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
     }
 
     @PutMapping(path = "{userId}")
@@ -88,7 +88,7 @@ public class UserController {
         if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
             try {
                 userService.updateUserAdmin(userId, user);
-                return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("Felhasználó módosítása sikeres!");
             } catch (IllegalStateException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
@@ -97,11 +97,11 @@ public class UserController {
         if (userId.equals(userService.getUserIdFromToken(getToken(authorization))) && !AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
             try {
                 userService.updateUser(userId, user);
-                return ResponseEntity.status(HttpStatus.OK).body("User updated successfully");
+                return ResponseEntity.status(HttpStatus.OK).body("Felhasználó módosítása sikeres!");
             } catch (IllegalStateException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The user must be admin or can modify only its own information.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges, vagy csak a saját adatait tudja módosítani!");
     }
 }
