@@ -20,5 +20,6 @@ public class NewOrder implements Serializable {
     private Long id;
 
     @JoinColumn(name = "order_id")
-    private Long order_id;
+    @ManyToOne
+    private Order order;
 }

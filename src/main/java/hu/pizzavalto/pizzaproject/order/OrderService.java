@@ -38,15 +38,15 @@ public class OrderService {
 
     public List<Order> getOrdersByIdsInNewOrders() {
         List<NewOrder> newOrders = newOrderRepository.findAll();
-        List<Long> orderIds = newOrders.stream().map(NewOrder::getOrder_id).collect(Collectors.toList());
+        List<Long> orderIds = newOrders.stream().map(no -> no.getOrder().getId()).collect(Collectors.toList());
         return orderRepository.findAllById(orderIds);
     }
 
-
+    @Transactional
     public void addNewOrder(Order order){
         Order savedOrder = orderRepository.save(order);
         NewOrder newOrder = new NewOrder();
-        newOrder.setOrder_id(savedOrder.getId());
+        newOrder.setOrder(savedOrder);
         newOrderRepository.save(newOrder);
     }
 

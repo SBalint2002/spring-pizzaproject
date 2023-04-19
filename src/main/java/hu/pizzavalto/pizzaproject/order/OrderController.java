@@ -114,7 +114,7 @@ public class OrderController {
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza nem található");
                 }
                 Order order = new Order(
-                        user.get().getId(),
+                        user.get(),
                         orderDto.getLocation(),
                         new Date(),
                         price,
