@@ -77,8 +77,6 @@ public class OrderController {
     public ResponseEntity<String> addNewOrder(
             @RequestBody OrderDto orderDto,
             @RequestHeader("Authorization") String authorization) {
-            log.info(orderDto.toString());
-            log.info(authorization);
         if (AccessUtil.isExpired(getToken(authorization)) || getToken(authorization).isEmpty()) {
             //status code 451
             return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
@@ -94,6 +92,15 @@ public class OrderController {
                     log.info("Error {} {}", pizzas.size(), orderDto.getPizzaIds().size());
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza nem található");
                 }
+                // Annyiszor rakja bele az adott pizzát ahányszor szerepel a listában a megadott id. [1,1,1] esetén 3x kerül bele az 1-es id-jú pizza
+                List<Pizza> orderedPizzas = new ArrayList<>();
+                for (Pizza pizza : pizzas) {
+                    for (int j = 0; j < orderDto.getPizzaIds().size(); j++) {
+                        if (Objects.equals(pizza.getId(), orderDto.getPizzaIds().get(j))) {
+                            orderedPizzas.add(pizza);
+                        }
+                    }
+                }
                 Order order = new Order(
                         user.get().getId(),
                         orderDto.getLocation(),
@@ -101,7 +108,7 @@ public class OrderController {
                         price,
                         orderDto.getPhoneNumber(),
                         false);
-                order.addPizzas(pizzas);
+                order.addPizzas(orderedPizzas);
                 orderService.addNewOrder(order);
                 return ResponseEntity.status(HttpStatus.OK).body("Rendelés sikeresen hozzáadva!");
             } else {
