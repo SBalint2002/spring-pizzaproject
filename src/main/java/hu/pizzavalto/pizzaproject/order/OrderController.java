@@ -101,13 +101,7 @@ public class OrderController {
                         }
                     }
                 }
-                Order order = new Order(
-                        user.get().getId(),
-                        orderDto.getLocation(),
-                        new Date(),
-                        price,
-                        orderDto.getPhoneNumber(),
-                        false);
+                Order order = new Order(user.get(), orderDto.getLocation(), new Date(), price, orderDto.getPhoneNumber(), false);
                 order.addPizzas(orderedPizzas);
                 orderService.addNewOrder(order);
                 return ResponseEntity.status(HttpStatus.OK).body("Rendelés sikeresen hozzáadva!");

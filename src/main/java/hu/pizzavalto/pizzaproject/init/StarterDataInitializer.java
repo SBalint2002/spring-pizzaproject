@@ -39,6 +39,8 @@ public class StarterDataInitializer implements CommandLineRunner {
         }
         if (userRepository.count() == 0){
             userRepository.save(new User(1L, "Elek", "Teszt", "tesztelek@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.ADMIN));
+            userRepository.save(new User(2L, "Béla", "Teszt", "tesztbela@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.USER));
+            userRepository.save(new User(3L, "János", "Teszt", "tesztjanos@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.USER));
         }
     }
 }
