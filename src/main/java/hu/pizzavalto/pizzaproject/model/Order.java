@@ -21,9 +21,8 @@ public class Order implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "location")
     private String location;
@@ -43,8 +42,8 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderPizza> orderPizzas;
 
-    public Order(User user, String location, Date order_date, int price, String phone_number, boolean ready){
-        this.user = user;
+    public Order(Long userId, String location, Date order_date, int price, String phone_number, boolean ready){
+        this.userId = userId;
         this.location = location;
         this.order_date = order_date;
         this.price = price;

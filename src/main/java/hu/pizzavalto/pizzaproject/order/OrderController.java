@@ -37,25 +37,6 @@ public class OrderController {
         return authorization.substring(7);
     }
 
-    @GetMapping(path = "/get-all")
-    public ResponseEntity<?> getOrders(@RequestHeader("Authorization") String authorization) {
-        try {
-            if (AccessUtil.isExpired(getToken(authorization))) {
-                //status code 451
-                return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
-            }
-            if (AccessUtil.isAdminFromJWTToken(getToken(authorization))) {
-                return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrders());
-            }
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
-        } catch (Exception e) {
-            // Log the exception
-            e.printStackTrace();
-            // Return a 500 error with the exception message
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
     @GetMapping(path = "/get-orders")
     public ResponseEntity<?> getOrdersById(@RequestHeader("Authorization") String authorization) {
         try {
@@ -114,7 +95,7 @@ public class OrderController {
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pizza nem található");
                 }
                 Order order = new Order(
-                        user.get(),
+                        user.get().getId(),
                         orderDto.getLocation(),
                         new Date(),
                         price,

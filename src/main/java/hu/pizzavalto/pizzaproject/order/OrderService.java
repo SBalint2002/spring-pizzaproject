@@ -32,13 +32,11 @@ public class OrderService {
         this.newOrderRepository = newOrderRepository;
     }
 
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
-    }
-
     public List<Order> getOrdersByIdsInNewOrders() {
         List<NewOrder> newOrders = newOrderRepository.findAll();
-        List<Long> orderIds = newOrders.stream().map(no -> no.getOrder().getId()).collect(Collectors.toList());
+        List<Long> orderIds = newOrders.stream()
+                .map(no -> no.getOrder().getId())
+                .collect(Collectors.toList());
         return orderRepository.findAllById(orderIds);
     }
 

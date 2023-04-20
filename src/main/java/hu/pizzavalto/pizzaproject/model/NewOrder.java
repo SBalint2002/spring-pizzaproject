@@ -20,6 +20,10 @@ public class NewOrder implements Serializable {
     private Long id;
 
     @JoinColumn(name = "order_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Order order;
+
+    public Order getOrder() {
+        return order;
+    }
 }
