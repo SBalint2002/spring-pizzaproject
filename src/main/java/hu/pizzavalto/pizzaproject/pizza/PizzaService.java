@@ -12,19 +12,34 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * PizzaService osztály.
+ */
 @Service
 public class PizzaService {
+    /**
+     * PizzaRepository példányosítása.
+     */
     private final PizzaRepository pizzaRepository;
-
+    /**
+     * PizzaService konstruktora.
+     * @param pizzaRepository PizzaRepository típusú adat.
+     */
     @Autowired
     public PizzaService(PizzaRepository pizzaRepository) {
         this.pizzaRepository = pizzaRepository;
     }
-
+    /**
+     * Ez a funkció az adatbázisból visszaadja az összes pizzát.
+     * @return Pizza típusú listát ad vissza.
+     */
     public List<Pizza> getPizzas() {
         return pizzaRepository.findAll();
     }
-
+    /**
+     * Ez a funkció egy új pizzát hozz létre az adatbázisba.
+     * @param pizza Létrehozando pizza paraméterei Pizza típusúként.
+     */
     public void addNewPizza(Pizza pizza){
         Optional<Pizza> existingPizza = pizzaRepository.findPizzaByName(pizza.getName());
         if (existingPizza.isPresent()){
@@ -33,6 +48,11 @@ public class PizzaService {
         pizzaRepository.save(pizza);
     }
 
+    /**
+     * Ez a funkció az adatbázisban lévő egyik pizzát módosítja
+     * @param pizzaId Azt a pizza azonosított várja amelyik pizzán változtatni szeretnénk.
+     * @param updatePizza Pizza típusban várja azt, hogy a pizzán mit kell, hogy módosítson.
+     */
     @Transactional
     public void updatePizza(Long pizzaId, Pizza updatePizza) {
         Pizza pizza = pizzaRepository.findById(pizzaId)

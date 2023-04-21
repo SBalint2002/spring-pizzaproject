@@ -10,27 +10,48 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+/**
+ * PizzaKontroller osztály.
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 @RequestMapping(path = "/pizza")
 public class PizzaController {
-
+    /**
+     * PizzaService példányosítva.
+     */
     private final PizzaService pizzaService;
-
+    /**
+     * PizzaKontroller konstruktora.
+     * @param pizzaService PizzaService típusú adatot vár.
+     */
     @Autowired
     public PizzaController(PizzaService pizzaService) {
         this.pizzaService = pizzaService;
     }
-
+    /**
+     * Ez a funkció szedi ki a tokenből a biztonsági kódot.
+     * @param authorization String tokenből.
+     * @return Biztonsági kódot Stringként adja vissza.
+     */
     private String getToken(String authorization) {
         return authorization.substring(7);
     }
 
+    /**
+     * Ez a funkció az összes pizzát kilistázza GET.
+     * @return Pizza típusú listát ad vissza.
+     */
     @GetMapping(path = "/get-all")
     public List<Pizza> getPizzas() {
         return pizzaService.getPizzas();
     }
-
+    /**
+     * Ez a funkció új pizzát ad hozzá a már meglévő pizza táblázatunkhoz POST.
+     * @param pizza Pizza, amit fel szeretnénk tölteni.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @PostMapping(path = "/add-pizza")
     public ResponseEntity<?> addNewPizza(
             @RequestBody Pizza pizza,
@@ -50,6 +71,13 @@ public class PizzaController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("A hozzáféréshez Admin jogosultság szükséges!");
     }
 
+    /**
+     * Ez a funkció modósítja azt a pizzát, amelyiknek az azonosítoját megadjuk neki.
+     * @param pizzaId Azt a pizza azonosított kell megadni, amelyik pizzát változtatni szeretnénk.
+     * @param pizza Pizza típusú adat, amit változtatni akarunk az adott pizzán.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @PutMapping(path = "{pizzaId}")
     public ResponseEntity<?> updatePizza(
             @PathVariable("pizzaId") Long pizzaId,
