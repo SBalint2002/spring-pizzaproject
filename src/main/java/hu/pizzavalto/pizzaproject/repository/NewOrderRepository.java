@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * ÚjRendelésRepository interface.
+ */
 @Repository
 public interface NewOrderRepository extends JpaRepository<NewOrder, Long> {
     Optional<NewOrder> findNewOrderById(Long id);
