@@ -39,9 +39,10 @@ public class OrderController {
 
     /**
      * RendelésiKontroller konstruktor.
-     * @param orderService RendelésiService típusú változót vár.
+     *
+     * @param orderService    RendelésiService típusú változót vár.
      * @param pizzaRepository PizzaRepository típusú változót vár.
-     * @param userService FelhasználóiService típusú változót vár.
+     * @param userService     FelhasználóiService típusú változót vár.
      */
     @Autowired
     public OrderController(OrderService orderService, PizzaRepository pizzaRepository, UserService userService) {
@@ -51,8 +52,10 @@ public class OrderController {
     }
 
     /**
-     * Egy Stringből kiszedi a tokent.
-     * @param authorization String típusú adatot vár.
+     * A request headerjében kapunk egy tokent, de előtte szerepel a "Bearer " szó
+     * így ez a metódus kiveszi előle és viszaadja csak a token-t.
+     *
+     * @param authorization Nyers tokent tartalmazó String.
      * @return Stringből csakis a tokent adja vissza.
      */
     private String getToken(String authorization) {
@@ -60,9 +63,11 @@ public class OrderController {
     }
 
     /**
-     * Ez a funkció adja vissza az összes rendelést az adatbázisból GET.
-     * @param authorization String token.
-     * @return VálaszEntitást ad vissza.
+     * Ez a funkció adja vissza az adott felhasználóhoz tartozó összes rendelést az adatbázisból GET.
+     *
+     * @param authorization Access token.
+     * @return VálaszEntitást ad vissza amiben szerepelhetnek a rendelések vagy akár hibakód.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @GetMapping(path = "/get-orders")
     public ResponseEntity<?> getOrdersById(@RequestHeader("Authorization") String authorization) {
@@ -71,7 +76,7 @@ public class OrderController {
                 //status code 451
                 return ResponseEntity.status(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS).body(null);
             }
-                return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderById(getToken(authorization)));
+            return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrderById(getToken(authorization)));
         } catch (Exception e) {
             // Log the exception
             e.printStackTrace();
@@ -81,9 +86,12 @@ public class OrderController {
     }
 
     /**
-     * Ez a funkció adja vissza az összes új rendelést az adatbázisból POST.
-     * @param authorization String token.
-     * @return VálaszEntitást ad vissza.
+     * Ez a funkció adja vissza az összes új rendelést ami nincs készre állítva az adatbázisból GET.
+     * Csak adminisztrátor férhet hozzá.
+     *
+     * @param authorization Access token.
+     * @return VálaszEntitást ad vissza amiben szerepelhetnek a rendelések vagy akár hibakód.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @GetMapping(path = "/get-new-orders")
     public ResponseEntity<?> getNewOrders(@RequestHeader("Authorization") String authorization) {
@@ -103,11 +111,14 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
     /**
      * Ez a funkció ad új rendelést hozzá a már meglévő rendeléseinkhez POST.
-     * @param orderDto Rendelési DataTransferObjektum.
-     * @param authorization String token.
+     *
+     * @param orderDto      Rendelési DataTransferObjektum.
+     * @param authorization Access token.
      * @return VálaszEntitást ad vissza.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @PostMapping(path = "/add-order")
     public ResponseEntity<String> addNewOrder(
@@ -121,7 +132,7 @@ public class OrderController {
             String email = AccessUtil.getEmailFromJWTToken(getToken(authorization));
             Optional<User> user = userService.findUserByEmail(email);
             int price = orderService.sumPrice(orderDto.getPizzaIds());
-            if (user.isPresent()){
+            if (user.isPresent()) {
                 List<Pizza> pizzas = pizzaRepository.findAllById(orderDto.getPizzaIds());
                 Set<Long> ids = new HashSet<>(orderDto.getPizzaIds());
                 if (ids.size() != pizzas.size()) {
@@ -150,11 +161,14 @@ public class OrderController {
     }
 
     /**
-     * Ez a funkció módosítja a rendelést PUT.
-     * @param id Rendelés id.
-     * @param order Rendelés típusú adat, amit változtatunk.
-     * @param authorization String token.
-     * @return VálaszEntitást ad vissza.
+     * Ez a funkció módosítja a megadott rendelést PUT.
+     * Csak adminisztrátor férhet hozzá.
+     *
+     * @param id            Rendelés id.
+     * @param order         Rendelés típusú adat, amire változtatjuk az adatbázisban szereplő rendelést..
+     * @param authorization Access token.
+     * @return VálaszEntitást ad vissza amiben szerepel a módosítás állapota.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @PutMapping(path = "{orderId}")
     public ResponseEntity<?> updateOrder(

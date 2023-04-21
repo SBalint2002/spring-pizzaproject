@@ -14,7 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 /**
- * BiztonságiKontroller osztály.
+ * Autentikáció kontroller osztálya.
+ * Itt szerepelnek az autentikációval kapcsolatos endpointok.
+ * Logn, Register, Admin-login, Refresh
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
@@ -28,8 +30,10 @@ public class AuthController {
      * Biztonsági Service fájl példányosítása.
      */
     private final AuthService authService;
+
     /**
      * AuthKontroller konstruktorja.
+     *
      * @param userService FelhasználóService típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
      * @param authService BiztonságiService típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
      */
@@ -37,10 +41,12 @@ public class AuthController {
         this.userService = userService;
         this.authService = authService;
     }
+
     /**
      * Ez a funkció felelős az felhasználó regisztrációjáért POST.
+     *
      * @param user Felhasználó típusú adat.
-     * @return VálaszEntitást ad vissza, amelyből kiderül, hogy sikeres volt-e a felhasználó létrehozása vagy sem.
+     * @return VálaszEntitást ad vissza, amelyből kiderül, hogy sikeres volt-e a felhasználó létrehozása vagy sem. Illetve, hogy az e-mail cím használatban van -e.
      */
     @PostMapping(path = "/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterDto user) {
@@ -58,8 +64,13 @@ public class AuthController {
             return ResponseEntity.status(e.getStatusCode()).body("Az Email cím használatban van!");
         }
     }
+
     /**
      * Ez a funkció Felelős a felhasználó bejelentkeztetéséért POST.
+     * Sikeres azonosításnál tovább küldi a service osztályban szereplő createResponse metódusnak
+     * ami elküldi a refresh token-t illetve az access token-t. Sikertelennél viszont a createErrorResponse
+     * metódust hívja meg ami null értéket küld tokenek helyett.
+     *
      * @param user Felhasználó típusú adat.
      * @return VálaszEntitást ad vissza, amelyből kiderül, hogy a felhasználó jó adatokkal probált-e belépni avagy sem.
      */
@@ -68,8 +79,13 @@ public class AuthController {
         Optional<User> foundUser = authService.authUser(user.getEmail(), user.getPassword());
         return foundUser.map(userService::createResponse).orElseGet(userService::createErrorResponse);
     }
+
     /**
      * Ez a funkció Felelős az admin felhasználó bejelentkeztetéséért POST.
+     * Sikeres azonosításnál tovább küldi a service osztályban szereplő createResponse metódusnak
+     * ami elküldi a refresh token-t illetve az access token-t. Sikertelennél viszont a createErrorResponse
+     * metódust hívja meg ami null értéket küld tokenek helyett.
+     *
      * @param user Felhasználó típusú adat.
      * @return VálaszEntitást ad vissza, amelyből kiderül, hogy a felhasználó jó adatokkal probált-e belépni az
      * admin belépéskor avagy sem.
@@ -87,9 +103,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Felhasználó nem található!");
         }
     }
+
     /**
-     * Lejárt access token esetén új tokent kér POST.
-     * @param request Kérés típusú adat tartalmazza a refresh tokent.
+     * Lejárt access token esetén új tokent kér a refresh tokenből POST.
+     *
+     * @param request refresh token.
      * @return VálaszEntitást ad vissza annak megfelőlen, hogy jó e a refresh token.
      */
     @PostMapping(path = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)

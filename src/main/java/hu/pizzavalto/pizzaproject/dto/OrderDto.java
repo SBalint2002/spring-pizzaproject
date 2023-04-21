@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Validációval egybe kötött Rendelés DataTransferObjekt.
+ * Lombok használatával nincs dokumentálva a konstruktor illetve a getter-setter-ek.
  */
 @Data
 @AllArgsConstructor

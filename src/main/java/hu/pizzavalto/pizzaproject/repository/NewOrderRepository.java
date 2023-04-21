@@ -11,5 +11,11 @@ import java.util.Optional;
  */
 @Repository
 public interface NewOrderRepository extends JpaRepository<NewOrder, Long> {
+    /**
+     * Adatbázis lekérdezést hajt végre hogy visszakapja a rendelést azonosító alapján.
+     *
+     * @param id Felhasználó azonosító.
+     * @return Rendelés típusú lista.
+     */
     Optional<NewOrder> findNewOrderById(Long id);
 }

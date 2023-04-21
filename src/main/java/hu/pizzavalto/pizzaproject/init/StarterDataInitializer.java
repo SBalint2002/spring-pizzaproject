@@ -15,7 +15,9 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * Elinditáskori Adat Létrehozó osztály.
+ * Alkalmazás induláskor ellenőrzi, üres e az adatbázis, ha igen akkor feltölti alapértelmezett adatokkal:
+ * - Egy sql fájlal ami tartalmaz 8 pizzát.
+ * - 3 felhasználót amiből az egyik adminisztrátor.
  */
 @Component
 public class StarterDataInitializer implements CommandLineRunner {
@@ -41,14 +43,17 @@ public class StarterDataInitializer implements CommandLineRunner {
 
     /**
      * Jelszó titkosítás.
+     *
      * @param passwordEncoder Jelszót titkosító Objektum.
      */
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
     /**
      * Backend indításakor, hogyha nincs adatbázisban találkható adat akkor létrehoz előre megadott adatokat.
+     *
      * @param args Argumentum.
      */
     @Override
@@ -60,7 +65,7 @@ public class StarterDataInitializer implements CommandLineRunner {
                 throw new RuntimeException("SQL fájl futtatása sikertelen volt!", e);
             }
         }
-        if (userRepository.count() == 0){
+        if (userRepository.count() == 0) {
             userRepository.save(new User(1L, "Elek", "Teszt", "tesztelek@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.ADMIN));
             userRepository.save(new User(2L, "Béla", "Teszt", "tesztbela@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.USER));
             userRepository.save(new User(3L, "János", "Teszt", "tesztjanos@gmail.com", passwordEncoder.encode("Adminadmin1"), Role.USER));

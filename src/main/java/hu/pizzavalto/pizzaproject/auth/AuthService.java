@@ -12,16 +12,16 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 /**
- * BiztonságiService osztály.
+ * AuthService osztály amely az authentikációhoz tartozó szolgáltatásokat tartalmazza.
  */
 @Service
 public class AuthService {
     /**
-     * FelhasználóRepositori fájl példányosítása.
+     * FelhasználóRepositori példányosítása.
      */
     private final UserRepository userRepository;
     /**
-     * JelszóEnkóder fájl példányosítása.
+     * JelszóEnkóder példányosítása.
      */
     private final PasswordEncoder passwordEncoder;
     /**

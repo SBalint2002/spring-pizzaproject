@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * JwtVálasz osztály.
+ * JwtResponse osztály, amely az AccessToken és RefreshToken adatokat tárolja.
  */
 @Data
 @NoArgsConstructor
@@ -19,5 +19,4 @@ public class JwtResponse {
      * RefreshToken Stringként való tárolása.
      */
     private String refreshToken;
-
 }

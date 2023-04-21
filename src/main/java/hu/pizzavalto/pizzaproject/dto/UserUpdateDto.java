@@ -10,15 +10,17 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * Validációval egybe kötött FelhasználóMódosítás DataTransferObjekt.
+ * Lombok használatával nincs dokumentálva a konstruktor illetve a getter-setter-ek.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateDto {
     /**
-     *  Validálja, hogy a keresztnév min 2 maximum 50 karakter hosszú és nem üres.
+     * Validálja, hogy a keresztnév min 2 maximum 50 karakter hosszú és nem üres.
      */
     @NotBlank
     @Nullable

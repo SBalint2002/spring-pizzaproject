@@ -24,7 +24,8 @@ public class Order implements Serializable {
     /**
      * Magától generáltatott rendelési id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     /**
      * Köztes táblának a felhasználói azonosítását tárolja TöbbazEgyhez kapcsolattal.
@@ -65,14 +66,15 @@ public class Order implements Serializable {
 
     /**
      * Ez a rendelés osztály konstruktora.
-     * @param user Egy Felhasználó typusú adatot kér be, ami a rendeléshez hozzárendel egy felhasználót.
-     * @param location Egy String változót kér be, ami beállítja a rendelés helyszínét.
-     * @param order_date Egy Date változót kér be, ami beállítja a rendelés időpontját.
-     * @param price Egy Integer változót kér be, ami beállítja a rendelés árát.
+     *
+     * @param user         Egy Felhasználó typusú adatot kér be, ami a rendeléshez hozzárendel egy felhasználót.
+     * @param location     Egy String változót kér be, ami beállítja a rendelés helyszínét.
+     * @param order_date   Egy Date változót kér be, ami beállítja a rendelés időpontját.
+     * @param price        Egy Integer változót kér be, ami beállítja a rendelés árát.
      * @param phone_number Egy String változót kér be, ami beállítja a rendelés telefonszámát.
-     * @param ready Egy booleant kér be, ami beállítja a rendelés státuszát.
+     * @param ready        Egy booleant kér be, ami beállítja a rendelés státuszát.
      */
-    public Order(User user, String location, Date order_date, int price, String phone_number, boolean ready){
+    public Order(User user, String location, Date order_date, int price, String phone_number, boolean ready) {
         this.user = user;
         this.location = location;
         this.order_date = order_date;
@@ -84,6 +86,7 @@ public class Order implements Serializable {
 
     /**
      * Ez a funkció adja oda a rendelésnek a rendelésben leadott pizzákat.
+     *
      * @param pizzas Pizza típusú lista.
      */
     public void addPizzas(List<Pizza> pizzas) {

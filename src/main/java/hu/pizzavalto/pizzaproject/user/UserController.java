@@ -24,25 +24,33 @@ public class UserController {
      * FelhasználóService példányosítása.
      */
     private final UserService userService;
+
     /**
      * FelhasználóKontroller konstruktora.
+     *
      * @param userService FelhasználóService adat.
      */
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     /**
-     * Ez a funkció kiszedi a tokenből, hogy jogosultságot.
-     * @param authorization String token.
-     * @return String jogosultságot ad vissza.
+     * A request headerjében kapunk egy tokent, de előtte szerepel a "Bearer " szó
+     * így ez a metódus kiveszi előle és viszaadja csak a token-t.
+     *
+     * @param authorization Nyers tokent tartalmazó String.
+     * @return Stringből csakis a tokent adja vissza.
      */
     private String getToken(String authorization) {
         return authorization.substring(7);
     }
+
     /**
-     * Ez a funkció az adott token segítségével lekéri az adott felhasználó összes adatát GET.
-     * @param authorization String token.
-     * @return VálaszEntitást küld.
+     * Ez a funkció az access tokenhez tartozó felhasználó adatait adja vissza GET.
+     *
+     * @param authorization Access token.
+     * @return Felhasznó adatait küldi el.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @GetMapping(path = "/data", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponseDto> getUserData(@RequestHeader("Authorization") String authorization) {
@@ -59,10 +67,14 @@ public class UserController {
                 value.getEmail(),
                 value.getRole()))).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
     }
+
     /**
-     * Ez a funkció kilistázza az adatbázisban megtalálható felhasználót GET.
-     * @param authorization String token.
-     * @return VálaszEntitást küld.
+     * Ez a funkció kilistázza az adatbázisban megtalálható összes felhasználót GET.
+     * Csak adminisztrátor férhet hozzá.
+     *
+     * @param authorization Access token.
+     * @return VálaszEntitást küld amiben szerepelhet a felhasználó típusú lista vagy a hibaüzenet.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @GetMapping(path = "/get-all")
     public ResponseEntity<?> getUsers(@RequestHeader("Authorization") String authorization) {
@@ -82,10 +94,13 @@ public class UserController {
     }
 
     /**
-     * Ez a funkció törli ki az adatbázisból az a felhasználót akinek az azonosítóját elküldjük DELETE.
-     * @param userId Törlendő felhasználó azonosítója.
-     * @param authorization String token.
-     * @return VálaszEntitást küld.
+     * Ez a funkció törli ki az adatbázisból a megadot azonosítójú felhasználót DELETE.
+     * Csak adminisztrátor férhet hozzá.
+     *
+     * @param userId        Törlendő felhasználó azonosítója.
+     * @param authorization Access token.
+     * @return VálaszEntitást küld a törlés eredményéről.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @DeleteMapping(path = "{userId}")
     public ResponseEntity<?> deleteUser(
@@ -104,10 +119,14 @@ public class UserController {
 
     /**
      * Ez a funkció módosítja azt a felhasználót akinek az azonosítóját megkapja. PUT
-     * @param userId Módodósítandó felhasználó azonosítója.
-     * @param user Módosítandó felhasználó típusú adatok.
+     * Adminisztrátor felhasználó bármelyik másik felhasználót tudja módosítani.
+     * Adminisztrátori joggal nem rendelkező felhasználó csak a saját adatait tudja módosítani.
+     *
+     * @param userId        Módodósítandó felhasználó azonosítója.
+     * @param user          Módosítandó felhasználó típusú adatok.
      * @param authorization String token.
-     * @return VálaszEntitást küld.
+     * @return VálaszEntitást küld a módosítás eredményéről.
+     * Lejárt token esetén 451-es státuszkód.
      */
     @PutMapping(path = "{userId}")
     public ResponseEntity<?> updateUser(

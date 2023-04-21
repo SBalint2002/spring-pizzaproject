@@ -1,0 +1,9 @@
+hu.pizzavalto.pizzaproject
+hu.pizzavalto.pizzaproject.auth
+hu.pizzavalto.pizzaproject.dto
+hu.pizzavalto.pizzaproject.init
+hu.pizzavalto.pizzaproject.model
+hu.pizzavalto.pizzaproject.order
+hu.pizzavalto.pizzaproject.pizza
+hu.pizzavalto.pizzaproject.repository
+hu.pizzavalto.pizzaproject.user
