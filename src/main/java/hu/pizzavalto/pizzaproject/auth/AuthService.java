@@ -14,15 +14,29 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
+    /**
+     * FelhasználóRepositori fájl példányosítása.
+     */
     private final UserRepository userRepository;
+    /**
+     * JelszóEnkóder fájl példányosítása.
+     */
     private final PasswordEncoder passwordEncoder;
-
+    /**
+     * AuthService konstruktorja.
+     * @param userRepository FelhasználóRepositori típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
+     * @param passwordEncoder JelszóEnkóder típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
+     */
     @Autowired
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
+    /**
+     * Ez a funkció ad új felhasználót hozzá az adatbázishoz.
+     * @param user Felhasználó típusú adat.
+     * @throws ResponseStatusException Akkor dob ResponseStatusException-t, ha az adott email már foglalt.
+     */
     public void addNewUser(User user) throws ResponseStatusException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Optional<User> existingUser = userRepository.findUserByEmail(user.getEmail());
@@ -32,7 +46,12 @@ public class AuthService {
         user.setRole(Role.USER);
         userRepository.save(user);
     }
-
+    /**
+     * Ez a funkció felelős a felhasználó beléptetéséért.
+     * @param email Felhasználó emailje Stringként.
+     * @param password Felhasználó jelszava Stringként.
+     * @return Amennyiben jó adatokat adunk meg visszakapunk egy felhasználót.
+     */
     public Optional<User> authUser(String email, String password) {
         Optional<User> user = userRepository.findUserByEmail(email);
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {

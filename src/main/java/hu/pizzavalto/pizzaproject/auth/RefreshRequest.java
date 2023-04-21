@@ -8,5 +8,8 @@ import lombok.*;
 @Builder
 @Getter
 public class RefreshRequest {
+    /**
+     * RefreshToken Stringként való tárolása.
+     */
     private String refreshToken;
 }

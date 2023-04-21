@@ -17,15 +17,28 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 @RequestMapping(path = "/auth")
 public class AuthController {
-
+    /**
+     * Felhasználói Service fájl példányosítása.
+     */
     private final UserService userService;
+    /**
+     * Biztonsági Service fájl példányosítása.
+     */
     private final AuthService authService;
-
+    /**
+     * AuthKontroller konstruktorja.
+     * @param userService FelhasználóService típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
+     * @param authService BiztonságiService típusú adat mellyel később hivatkozhasson rájuk az osztály más metódusaiban.
+     */
     public AuthController(UserService userService, AuthService authService) {
         this.userService = userService;
         this.authService = authService;
     }
-
+    /**
+     * Ez a funkció felelős az felhasználó regisztrációjáért POST.
+     * @param user Felhasználó típusú adat.
+     * @return VálaszEntitást ad vissza, amelyből kiderül, hogy sikeres volt-e a felhasználó létrehozása vagy sem.
+     */
     @PostMapping(path = "/register")
     public ResponseEntity<?> registerNewUser(@Valid @RequestBody UserRegisterDto user) {
         try {
@@ -42,13 +55,22 @@ public class AuthController {
             return ResponseEntity.status(e.getStatusCode()).body("Az Email cím használatban van!");
         }
     }
-
+    /**
+     * Ez a funkció Felelős a felhasználó bejelentkeztetéséért POST.
+     * @param user Felhasználó típusú adat.
+     * @return VálaszEntitást ad vissza, amelyből kiderül, hogy a felhasználó jó adatokkal probált-e belépni avagy sem.
+     */
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody User user) {
         Optional<User> foundUser = authService.authUser(user.getEmail(), user.getPassword());
         return foundUser.map(userService::createResponse).orElseGet(userService::createErrorResponse);
     }
-
+    /**
+     * Ez a funkció Felelős az admin felhasználó bejelentkeztetéséért POST.
+     * @param user Felhasználó típusú adat.
+     * @return VálaszEntitást ad vissza, amelyből kiderül, hogy a felhasználó jó adatokkal probált-e belépni az
+     * admin belépéskor avagy sem.
+     */
     @PostMapping(path = "/admin-login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> adminLogin(@RequestBody User user) {
         Optional<User> foundUser = authService.authUser(user.getEmail(), user.getPassword());
@@ -62,7 +84,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Felhasználó nem található!");
         }
     }
-
+    /**
+     * Lejárt access token esetén új tokent kér POST.
+     * @param request Kérés típusú adat tartalmazza a refresh tokent.
+     * @return VálaszEntitást ad vissza annak megfelőlen, hogy jó e a refresh token.
+     */
     @PostMapping(path = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtResponse> refresh(@RequestBody RefreshRequest request) {
         if (RefreshUtil.isExpired(request.getRefreshToken())) {

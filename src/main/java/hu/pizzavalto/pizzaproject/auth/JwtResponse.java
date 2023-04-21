@@ -8,7 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponse {
+    /**
+     * AccessToken Stringként való tárolása.
+     */
     private String accessToken;
+    /**
+     * RefreshToken Stringként való tárolása.
+     */
     private String refreshToken;
 
 }
