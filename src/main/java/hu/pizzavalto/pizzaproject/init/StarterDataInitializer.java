@@ -16,18 +16,38 @@ import java.sql.SQLException;
 
 @Component
 public class StarterDataInitializer implements CommandLineRunner {
+    /**
+     * Jelszó titkosítás.
+     */
     private PasswordEncoder passwordEncoder;
+    /**
+     * Pizza Repository kapcsolata az adatbázishoz.
+     */
     @Autowired
     private PizzaRepository pizzaRepository;
+    /**
+     * Felhasználó Repository kapcsolata az adatbázishoz.
+     */
     @Autowired
     private UserRepository userRepository;
+    /**
+     * SQL fájl összekapcsolására alakalmas Objektum.
+     */
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * Jelszó titkosítás.
+     * @param passwordEncoder Jelszót titkosító Objektum.
+     */
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+    /**
+     * Backend indításakor, hogyha nincs adatbázisban találkható adat akkor létrehoz előre megadott adatokat.
+     * @param args Argumentum.
+     */
     @Override
     public void run(String... args) {
         if (pizzaRepository.count() == 0) {
