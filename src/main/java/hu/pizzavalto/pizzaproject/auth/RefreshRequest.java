@@ -2,6 +2,9 @@ package hu.pizzavalto.pizzaproject.auth;
 
 import lombok.*;
 
+/**
+ * RefreshKérés osztály.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

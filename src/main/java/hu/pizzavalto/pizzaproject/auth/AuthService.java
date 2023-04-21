@@ -11,7 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
-
+/**
+ * BiztonságiService osztály.
+ */
 @Service
 public class AuthService {
     /**

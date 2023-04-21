@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * RefreshHasználhatósági osztály.
+ */
 @Component
 public class RefreshUtil {
     /**
