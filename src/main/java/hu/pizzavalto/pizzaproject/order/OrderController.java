@@ -16,16 +16,33 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
+/**
+ * RendelésiKontroller osztály.
+ */
 @RestController
 @Slf4j
 @CrossOrigin(origins = "http://localhost:8080", allowedHeaders = "*")
 @RequestMapping(path = "/order")
 public class OrderController {
+    /**
+     * RendelésiService példányosítása.
+     */
     private final OrderService orderService;
+    /**
+     * PizzaRepository példányosítása.
+     */
     private final PizzaRepository pizzaRepository;
-
+    /**
+     * FelhasználóiService példányosítása.
+     */
     private final UserService userService;
 
+    /**
+     * RendelésiKontroller konstruktor.
+     * @param orderService RendelésiService típusú változót vár.
+     * @param pizzaRepository PizzaRepository típusú változót vár.
+     * @param userService FelhasználóiService típusú változót vár.
+     */
     @Autowired
     public OrderController(OrderService orderService, PizzaRepository pizzaRepository, UserService userService) {
         this.orderService = orderService;
@@ -33,10 +50,20 @@ public class OrderController {
         this.userService = userService;
     }
 
+    /**
+     * Egy Stringből kiszedi a tokent.
+     * @param authorization String típusú adatot vár.
+     * @return Stringből csakis a tokent adja vissza.
+     */
     private String getToken(String authorization) {
         return authorization.substring(7);
     }
 
+    /**
+     * Ez a funkció adja vissza az összes rendelést az adatbázisból GET.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @GetMapping(path = "/get-orders")
     public ResponseEntity<?> getOrdersById(@RequestHeader("Authorization") String authorization) {
         try {
@@ -53,6 +80,11 @@ public class OrderController {
         }
     }
 
+    /**
+     * Ez a funkció adja vissza az összes új rendelést az adatbázisból POST.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @GetMapping(path = "/get-new-orders")
     public ResponseEntity<?> getNewOrders(@RequestHeader("Authorization") String authorization) {
         try {
@@ -71,8 +103,12 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-
+    /**
+     * Ez a funkció ad új rendelést hozzá a már meglévő rendeléseinkhez POST.
+     * @param orderDto Rendelési DataTransferObjektum.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @PostMapping(path = "/add-order")
     public ResponseEntity<String> addNewOrder(
             @RequestBody OrderDto orderDto,
@@ -113,7 +149,13 @@ public class OrderController {
         }
     }
 
-
+    /**
+     * Ez a funkció módosítja a rendelést PUT.
+     * @param id Rendelés id.
+     * @param order Rendelés típusú adat, amit változtatunk.
+     * @param authorization String token.
+     * @return VálaszEntitást ad vissza.
+     */
     @PutMapping(path = "{orderId}")
     public ResponseEntity<?> updateOrder(
             @PathVariable("orderId") Long id,

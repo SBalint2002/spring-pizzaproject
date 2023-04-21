@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * PizzaRepository inteface.
+ */
 @Repository
 public interface PizzaRepository extends JpaRepository<Pizza, Long> {
     @Query("SELECT u FROM Pizza u WHERE u.name = ?1")
