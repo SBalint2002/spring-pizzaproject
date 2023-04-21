@@ -37,8 +37,10 @@ public class OrderDto {
      * Rendelés DataTransferObjektum státusza.
      */
     private boolean ready;
+
     /**
      * Rendelés DataTransferObjektum konstruktora.
+     *
      * @param order Rendelés típusú adatot vár, aminek segítségével példányosítja a DataTransferObjektum-ot.
      */
     public OrderDto(Order order) {

@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static hu.pizzavalto.pizzaproject.auth.AccessUtil.getEmailFromJWTToken;
+
 /**
  * FelhasználóService osztály.
  */
@@ -33,9 +34,11 @@ public class UserService {
      * JelszóEnkóder példányosítása.
      */
     private final PasswordEncoder passwordEncoder;
+
     /**
      * FelhasználóService konstruktora.
-     * @param userRepository FelhasználóRepository típusú adat.
+     *
+     * @param userRepository  FelhasználóRepository típusú adat.
      * @param passwordEncoder JelszóEnkóder típusú adat.
      */
     @Autowired
@@ -43,15 +46,19 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     /**
-     * Ez a funkció adja vissza a felhasználók listáját.
+     * Ez a funkció adja vissza az összes felhasználónak a listáját.
+     *
      * @return Flehasználó típusú listát ad vissza.
      */
     public List<User> getUsers() {
         return userRepository.findAll();
     }
+
     /**
-     * Ez a funkció adja meg, hogy a tokenhez tartó felhasználó azonosítóját.
+     * Ez a funkció adja meg, a tokenhez tartó felhasználó azonosítóját.
+     *
      * @param token String token.
      * @return Felhasználó azonosítóját adja vissza.
      */
@@ -59,16 +66,20 @@ public class UserService {
         Optional<User> user = findUserByEmail(getEmailFromJWTToken(token));
         return user.map(User::getId).orElse(null);
     }
+
     /**
      * Ez a funkció email címből visszaadja, hogy melyik felhasználóé az adott email cím.
-     * @param email Email típusú adatot vár.
-     * @return Felhasználot ad vissza.
+     *
+     * @param email E-mail cím.
+     * @return Felhasználó Optional objektumot ad vissza.
      */
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
+
     /**
-     * Ez a funkció felhasználó adataiból létrehozza az access és a refreshTokent.
+     * Ez a funkció felhasználó adataiból létrehozza az access és a refresh tokent.
+     *
      * @param user Felhasználó típusú adatot vár.
      * @return VálaszEntitást ad vissza.
      */
@@ -78,16 +89,20 @@ public class UserService {
         JwtResponse response = new JwtResponse(accessToken, refreshToken);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
     /**
-     * Ez a funkció vissza küld null értéket belépéskor, ha rosszak a bevitt adataink.
+     * Ez a funkció vissza küld null értéket belépéskor, ha rosszak a bevitt adatok.
+     *
      * @return VálaszEntitást ad vissza.
      */
     public ResponseEntity<JwtResponse> createErrorResponse() {
         JwtResponse response = new JwtResponse(null, null);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
+
     /**
      * Ez a funkció az adott azonosítóval rendelkező felhasználót kitörli.
+     *
      * @param userId Felhasználó azonosítót vár.
      */
     public void deleteUser(Long userId) {
@@ -96,9 +111,13 @@ public class UserService {
         }
         userRepository.deleteById(userId);
     }
+
     /**
-     * Ez a funkció tudja megváltoztatni az adott felhasználó adatait jogosultsággal együtt.
-     * @param userId Az adott felhasználó azonosítója.
+     * Ez a funkció frissíti a felhasználó szerepkörét.
+     * És tovább adja az updateUserInformation metódusnak a felhasználót.
+     * Csak adminisztrátor férhet hozzá.
+     *
+     * @param userId     Az adott felhasználó azonosítója.
      * @param updateUser Az adott felhasználó további változtatásra váro adatai.
      */
     @Transactional
@@ -113,9 +132,12 @@ public class UserService {
             user.setRole(Role.USER);
         }
     }
+
     /**
      * Ez a funkció hívja meg az updateUserInformation functions, ami beállítja a felhasználói módosításokat.
-     * @param userId Az adott felhasználó azonosítója.
+     * Ezt a nem adminisztrátor használja.
+     *
+     * @param userId     Az adott felhasználó azonosítója.
      * @param updateUser Az adott felhasználó további változtatásra váro adatai.
      */
     @Transactional
@@ -124,10 +146,12 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("Felhasználó " + userId + " azonosítóval nem létezik!"));
         updateUserInformation(user, updateUser);
     }
+
     /**
      * Ez a funkció tudja megváltoztatni az adott felhasználó adatait.
-     * @param user Az adott felhasználó azonosítója.
-     * @param updateUser Az adott felhasználó további változtatásra váro adatai.
+     *
+     * @param user       Az adott felhasználó azonosítója.
+     * @param updateUser Az adott felhasználó módosított adatai.
      */
     @Transactional
     private void updateUserInformation(User user, UserUpdateDto updateUser) {

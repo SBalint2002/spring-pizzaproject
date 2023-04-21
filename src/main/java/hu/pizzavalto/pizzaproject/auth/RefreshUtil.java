@@ -10,24 +10,28 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 /**
- * RefreshHasználhatósági osztály.
+ * Refresh token osztálya amiben generálja a token-t,
+ * ellenőrzi érvényességét, beállítja lejárati idejét (30 nap),
+ * kicsomagolja a felhasználó e-mail címét.
  */
 @Component
 public class RefreshUtil {
     /**
-     * RefreshTokenhez tartozó kulcs Stringként való tárolása.
+     * Token titkosításához használt kulcs, String változó.
      */
     private static final String secret = "olUo6BXAlnmeWQJA5NLMy8rISeO4qfkhlPL9P6FM";
+
     /**
-     * RefreshToken lejáratért felelős long milliszekundumban.
+     * Lejáratért felelős long típusú érték milliszekundumban.
      */
     private static final long expirationMs = 2592000000L; // 30 nap
     //private static final long expirationMs = 60000; // 1 perc
 
     /**
-     * Ez a funkció hozza létre a refreshTokent.
-     * @param user Felhasználó típusú adatot vár.
-     * @return Stringket ad vissza a kérés sikerességéről.
+     * Ez a funkció hozza létre a refresh token-t a felhasználóhoz.
+     *
+     * @param user Felhasználó objektum.
+     * @return Visszaadja a létrehozott refresh token-t szöveg típusban.
      */
     public static String createRefreshToken(User user) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -44,9 +48,10 @@ public class RefreshUtil {
     }
 
     /**
-     * Ez a funkció adja vissza a refreshTokenből az adott felhasználó kinyerhető email címét.
-     * @param token String típusú adatot kér, ami egy token.
-     * @return Strinként adja vissza az email címet.
+     * Ez a funkció kiszedi az e-mail címet a tokenből.
+     *
+     * @param token refresh token.
+     * @return Vissza küldi a tokenben található e-meail címet szövegként.
      */
     public static String getEmailFromRefreshToken(String token) {
         byte[] apiKeySecretBytes = secret.getBytes();
@@ -54,16 +59,17 @@ public class RefreshUtil {
     }
 
     /**
-     * Ez a funkció nézi, meg, hogy az adott token lejárt-e.
-     * @param token String típusú adatot kér, ami token.
-     * @return Vissza küldi, hogy a token még érvényes-e.
+     * Ez a funkció ellenőrzi, hogy a token lejárt -e. True értékkel jelzi ha lejárt.
+     *
+     * @param token access token.
+     * @return Eldönti, hogy a token lejárt -e (true/false).
      */
     public static boolean isExpired(String token) {
-        try{
+        try {
             Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
             Date expirationDate = claims.getExpiration();
             return expirationDate.before(new Date());
-        } catch (ExpiredJwtException error){
+        } catch (ExpiredJwtException error) {
             return true;
         }
 

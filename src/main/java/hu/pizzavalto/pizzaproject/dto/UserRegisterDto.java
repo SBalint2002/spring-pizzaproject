@@ -6,8 +6,10 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * Validációval egybe kötött Felhasználó DataTransferObjekt.
+ * Lombok használatával nincs dokumentálva a konstruktor illetve a getter-setter-ek.
  */
 @Data
 @AllArgsConstructor

@@ -4,8 +4,10 @@ import hu.pizzavalto.pizzaproject.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 /**
  * Validációval egybe kötött FelhasználóVálasz DataTransferObjekt.
+ * Lombok használatával nincs dokumentálva a konstruktor illetve a getter-setter-ek.
  */
 @Data
 @AllArgsConstructor

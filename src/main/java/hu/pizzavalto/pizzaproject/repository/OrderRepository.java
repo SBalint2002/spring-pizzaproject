@@ -11,5 +11,11 @@ import java.util.List;
  */
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    /**
+     * Adatbázis lekérdezést hajt végre hogy visszakapja a felhasználóhoz tartozó rendeléseket.
+     *
+     * @param id Felhasználó azonosító.
+     * @return Rendelés típusú lista.
+     */
     List<Order> findOrdersByUserId(long id);
 }

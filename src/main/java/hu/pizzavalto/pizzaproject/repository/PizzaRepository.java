@@ -12,6 +12,12 @@ import java.util.Optional;
  */
 @Repository
 public interface PizzaRepository extends JpaRepository<Pizza, Long> {
+    /**
+     * Adatbázis lekérdezést hajt végre amivel pizza név alapján keresi meg a Pizza Objektumot.
+     *
+     * @param name Pizza neve.
+     * @return Pizza típusú Optional.
+     */
     @Query("SELECT u FROM Pizza u WHERE u.name = ?1")
     Optional<Pizza> findPizzaByName(String name);
 }

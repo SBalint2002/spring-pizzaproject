@@ -9,7 +9,8 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * ÚjRendelések osztály.
+ * NewOrder osztály, amely tárolja az új rendelés azonosítóját
+ * illetve össze van kötve a rendelések táblával ManyToOne kapcsolással az order_id-n.
  */
 @Entity
 @Table(name = "NEW_ORDERS")
@@ -19,13 +20,14 @@ import java.io.Serializable;
 @ToString
 public class NewOrder implements Serializable {
     /**
-     * Magától generáltatott újRendelési id.
+     * Új rendelés azonosító.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     /**
-     * Köztes táblának a rendelési azonosítását tárolja többazEgyhez kapcsolattal.
+     * Össze van kötve a rendelések táblával ManyToOne kapcsolással az order_id-n.
      */
     @JoinColumn(name = "order_id")
     @ManyToOne(fetch = FetchType.EAGER)
@@ -33,7 +35,7 @@ public class NewOrder implements Serializable {
 
     /**
      * Ez a funkció adja vissza a rendelést.
-     * @return Visszaadja az az adott rendelést.
+     * @return rendelés.
      */
     public Order getOrder() {
         return order;
