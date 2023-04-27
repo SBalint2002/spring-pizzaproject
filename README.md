@@ -41,3 +41,8 @@ Az alábbiakban a funkciók listája található:
 - Rendelés állapotának nyomon követése.
 - Étlap kezelése.
 - Rendelések kezelése.
+
+## Dokumentáció
+A backend dokumentációt a docs mappán belül az __index.html__ fájl megnyitásával lehet elérni.
+
+Az endpoint dokumentációt a __Backend_Endpointok__ nevű world doksiban lehet elérni.
